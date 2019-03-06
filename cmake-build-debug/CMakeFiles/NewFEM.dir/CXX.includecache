@@ -1,0 +1,54 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/arguments.h
+nlohmann/json.hpp
+-
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/localMatrix.h
+math.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/math.h
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/mesh.h
+iostream
+-
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/methods.h
+math.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/math.h
+vector
+-
+iostream
+-
+fstream
+-
+map
+-
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./Solver.h
+./structurs/mesh.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/mesh.h
+./structurs/arguments.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/arguments.h
+./structurs/localMatrix.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/localMatrix.h
+./structurs/methods.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/methods.h
+iostream
+-
+math.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./math.h
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.cpp
+NavierStokes.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.h
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.h
+./Solver.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./Solver.h
+

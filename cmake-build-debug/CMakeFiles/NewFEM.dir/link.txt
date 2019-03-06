@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/NewFEM.dir/main.cpp.o CMakeFiles/NewFEM.dir/Solver.cpp.o CMakeFiles/NewFEM.dir/SUPG.cpp.o CMakeFiles/NewFEM.dir/NavierStokes.cpp.o  -o NewFEM 
