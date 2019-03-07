@@ -68,11 +68,11 @@ int main(int argc, char *argv[])
 
     writeLog(paths.log, mesh.name);
 
-    //SUPG *supg = new SUPG(mesh, arguments, paths.result);
-    //delete supg;
+    SUPG *supg = new SUPG(mesh, arguments, paths.result);
+    delete supg;
 
-    NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
-    delete ns;
+    //NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
+    //delete ns;
 
     if (inputData["replaceToBinary"])
         if(arguments.write.record)
