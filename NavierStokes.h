@@ -14,7 +14,7 @@ public:
 private:
 
     double rho, mu;
-    double *p, *u, *v, *un, *vn, *uStar, *vStar;
+    double *p, *u, *v, *un, *vn, *uStar, *vStar, *c, *cn;
 
     double **localMatrix0, **localMatrix1, **localMatrix2, **localMatrix3;
     double *localVector0, *localVector1, *localVector2, *localVector3;
@@ -25,9 +25,15 @@ private:
     void fillSLAE_p();
     void fillSLAE_u();
     void fillSLAE_v();
+    void fillSLAE_c();
 
     void currectUV();
     void privateBorderCondition();
+    double calcH(double *u, double *v, double square);
+
+    void supgFull(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
+    void supgMatrixMass(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
+
     void reservMemory();
     void init();
     void calc();

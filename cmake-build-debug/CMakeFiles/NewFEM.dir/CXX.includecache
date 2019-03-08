@@ -86,8 +86,24 @@ math.h
 nlohmann/json.hpp
 -
 
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/localMatrix.h
+math.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/math.h
+
 /home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/mesh.h
 iostream
+-
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/methods.h
+math.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/math.h
+vector
+-
+iostream
+-
+fstream
+-
+map
 -
 
 /home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/paths.h
@@ -110,6 +126,24 @@ SUPG.h
 ./Solver.h
 /home/konstantin/Рабочий стол/project/cpp/NewFEM/./Solver.h
 
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.cpp
+Solver.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.h
+
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.h
+./structurs/mesh.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/mesh.h
+./structurs/arguments.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/arguments.h
+./structurs/localMatrix.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/localMatrix.h
+./structurs/methods.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/methods.h
+iostream
+-
+math.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/math.h
+
 /home/konstantin/Рабочий стол/project/cpp/NewFEM/main.cpp
 iostream
 -
@@ -118,6 +152,8 @@ nlohmann/json.hpp
 fstream
 -
 cstring
+-
+time.h
 -
 ./structurs/mesh.h
 /home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/mesh.h

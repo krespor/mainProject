@@ -46,9 +46,10 @@ void SUPG::init()
 {
     methods.null(c, mesh.n);
     methods.null(cn, mesh.n);
-    methods.null(v, mesh.n);
+    //methods.null(v, mesh.n);
 
-    methods.actionsVC(u, -1.0, mesh.n, '=');
+    methods.actionsVC(u, 1.0 / sqrt(2), mesh.n, '=');
+    methods.actionsVC(v, 1.0 / sqrt(2), mesh.n, '=');
 
     hElem = 0;
 }

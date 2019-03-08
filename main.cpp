@@ -2,6 +2,7 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <cstring>
+#include <time.h>
 
 #include "./structurs/mesh.h"
 #include "./structurs/paths.h"
@@ -24,6 +25,8 @@ int runCommand(string command) {return system (command.c_str());}
 
 int main(int argc, char *argv[])
 {
+    int timeA = (int)(clock() / 1000000.0);
+
     string pathToInput = "/home/konstantin/Solver/inputData.json";
     string location;
 
@@ -68,11 +71,11 @@ int main(int argc, char *argv[])
 
     writeLog(paths.log, mesh.name);
 
-    SUPG *supg = new SUPG(mesh, arguments, paths.result);
-    delete supg;
+    //SUPG *supg = new SUPG(mesh, arguments, paths.result);
+    //delete supg;
 
-    //NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
-    //delete ns;
+    NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
+    delete ns;
 
     if (inputData["replaceToBinary"])
         if(arguments.write.record)
@@ -82,6 +85,9 @@ int main(int argc, char *argv[])
         if(arguments.write.record)
             archiveFolder(paths.result, inputData["deleteFolderAfterArchive"]);
 
+    int timeB = (int)(clock() / 1000000.0);
+
+    cout << "ttt = " << timeB - timeA << endl;
 
     return 0;
 }

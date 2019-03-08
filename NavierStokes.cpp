@@ -25,6 +25,9 @@ void NavierStokes::reservMemory()
     uStar = new double[mesh.n];
     vStar = new double[mesh.n];
 
+    //c = new double[mesh.n];
+    //cn = new double[mesh.n];
+
     localU = new double[3];
     localV = new double[3];
 
@@ -57,6 +60,9 @@ void NavierStokes::init()
     methods.null(v, mesh.n);
     methods.null(un, mesh.n);
     methods.null(vn, mesh.n);
+
+    //methods.null(c, mesh.n);
+    //methods.null(cn, mesh.n);
 }
 
 void NavierStokes::calc()
@@ -91,6 +97,12 @@ void NavierStokes::calc()
 
         currectUV();
 
+        //fillSLAE_c();
+        //conditionBorder_1(0, 0);
+        //conditionBorder_1(1, 3);
+        //solveSLAE(c);
+
+        //methods.equateV(cn, c, mesh.n);
         methods.equateV(un, u, mesh.n);
         methods.equateV(vn, v, mesh.n);
 
@@ -302,6 +314,48 @@ void NavierStokes::fillSLAE_v()
     }
 }
 
+void NavierStokes::fillSLAE_c()
+{
+    double hElem;
+    for (int t = 0; t < mesh.m; t++)
+    {
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            k[i] = mesh.elements[t][i];
+
+            localVector0[i] = cn[k[i]];
+            localU[i] = u[k[i]];
+            localV[i] = v[k[i]];
+
+            x[i] = mesh.nodes[k[i]][0];
+            y[i] = mesh.nodes[k[i]][1];
+        }
+
+        calc_a_b();
+
+        hElem = calcH(localU, localV, mesh.square[t]);
+
+        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix0);
+        methods.multMC(localMatrix0, 1.0 / del_t, 3);
+
+        //supgMatrix(b, mesh.square[t], hElem, localMatrix1);
+        supgFull(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix1);
+
+        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix2);
+        methods.multMV(localMatrix2, localVector0, localVector1, 3);
+        methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
+
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            B[k[i]] += localVector1[i];
+            for (unsigned int j = 0; j < 3; j++)
+            {
+                A[k[i]][k[j]] += localMatrix0[i][j] + localMatrix1[i][j];
+            }
+        }
+    }
+}
+
 void NavierStokes::currectUV()
 {
     double y;
@@ -341,3 +395,98 @@ void NavierStokes::privateBorderCondition()
         conditionNode_1(c, t);
     }
 }
+
+double NavierStokes::calcH(double *u, double *v, double square)
+{
+    double uAvg = (u[0] + u[1] + u[2]) / 3.0;
+    double vAvg = (v[0] + v[1] + v[2]) / 3.0;
+
+    double uMod = sqrt(uAvg * uAvg + vAvg * vAvg);
+
+    double he = 2.0 / (
+            fabs((uAvg * b[0]) / (2.0 * square * uMod) + (vAvg * a[0]) / (2.0 * square * uMod)) +
+            fabs((uAvg * b[1]) / (2.0 * square * uMod) + (vAvg * a[1]) / (2.0 * square * uMod)) +
+            fabs((uAvg * b[2]) / (2.0 * square * uMod) + (vAvg * a[2]) / (2.0 * square * uMod)));
+
+    return he;
+}
+
+void NavierStokes::supgFull(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix)
+{
+    double uAvg = (u[0] + u[1] + u[2]) / 3.0;
+    double vAvg = (v[0] + v[1] + v[2]) / 3.0;
+    double uMod = sqrt(uAvg * uAvg + vAvg * vAvg);
+
+    if (uMod != 0)
+    {
+        double alpha = 1;//(1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
+
+        matrix[0][0] = b[0] * (2.0*u[0] + u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[0] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
+        matrix[0][1] = b[1] * (2.0*u[0] + u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[1] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
+        matrix[0][2] = b[2] * (2.0*u[0] + u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[2] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
+
+        matrix[1][0] = b[0] * (u[0] + 2.0*u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[0] * (uAvg * b[1] + vAvg * a[1]) / (8.0 * square * uMod);
+        matrix[1][1] = b[1] * (u[0] + 2.0*u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[1] * (uAvg * b[1] + vAvg * a[1]) / (8.0 * square * uMod);
+        matrix[1][2] = b[2] * (u[0] + 2.0*u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[2] * (uAvg * b[1] + vAvg * a[1]) / (8.0 * square * uMod);
+
+        matrix[2][0] = b[0] * (u[0] + u [1] + 2.0*u[2]) / 24.0 + uAvg * alpha * h * b[0] * (uAvg * b[2] + vAvg * a[2]) / (8.0 * square * uMod);
+        matrix[2][1] = b[1] * (u[0] + u [1] + 2.0*u[2]) / 24.0 + uAvg * alpha * h * b[1] * (uAvg * b[2] + vAvg * a[2]) / (8.0 * square * uMod);
+        matrix[2][2] = b[2] * (u[0] + u [1] + 2.0*u[2]) / 24.0 + uAvg * alpha * h * b[2] * (uAvg * b[2] + vAvg * a[2]) / (8.0 * square * uMod);
+
+
+
+        matrix[0][0] += a[0] * (2.0*v[0] + v[1] + v[2]) / 24.0 + vAvg * alpha * h * a[0] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
+        matrix[0][1] += a[1] * (2.0*v[0] + v[1] + v[2]) / 24.0 + vAvg * alpha * h * a[1] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
+        matrix[0][2] += a[2] * (2.0*v[0] + v[1] + v[2]) / 24.0 + vAvg * alpha * h * a[2] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
+
+        matrix[1][0] += a[0] * (v[0] + 2.0*v[1] + v[2]) / 24.0 + vAvg * alpha * h * a[0] * (uAvg * b[1] + vAvg * a[1]) / (8.0 * square * uMod);
+        matrix[1][1] += a[1] * (v[0] + 2.0*v[1] + v[2]) / 24.0 + vAvg * alpha * h * a[1] * (uAvg * b[1] + vAvg * a[1]) / (8.0 * square * uMod);
+        matrix[1][2] += a[2] * (v[0] + 2.0*v[1] + v[2]) / 24.0 + vAvg * alpha * h * a[2] * (uAvg * b[1] + vAvg * a[1]) / (8.0 * square * uMod);
+
+        matrix[2][0] += a[0] * (v[0] + v[1] + 2.0*v[2]) / 24.0 + vAvg * alpha * h * a[0] * (uAvg * b[2] + vAvg * a[2]) / (8.0 * square * uMod);
+        matrix[2][1] += a[1] * (v[0] + v[1] + 2.0*v[2]) / 24.0 + vAvg * alpha * h * a[1] * (uAvg * b[2] + vAvg * a[2]) / (8.0 * square * uMod);
+        matrix[2][2] += a[2] * (v[0] + v[1] + 2.0*v[2]) / 24.0 + vAvg * alpha * h * a[2] * (uAvg * b[2] + vAvg * a[2]) / (8.0 * square * uMod);
+    } else
+    {
+        methods.null(matrix, 3);
+    }
+}
+
+void NavierStokes::supgMatrixMass(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix)
+{
+    double uAvg = (u[0] + u[1] + u[2]) / 3.0;
+    double vAvg = (v[0] + v[1] + v[2]) / 3.0;
+    double uMod = sqrt(uAvg * uAvg + vAvg * vAvg);
+
+    if (uMod != 0)
+    {
+        double alpha = 1;//(1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
+
+        matrix[0][0] = square / 6.0  + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
+        matrix[0][1] = square / 12.0 + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
+        matrix[0][2] = square / 12.0 + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
+
+        matrix[1][0] = square / 12.0 + (alpha * h * (uAvg * b[1] + vAvg * a[1])) / (12.0 * uMod);
+        matrix[1][1] = square / 6.0  + (alpha * h * (uAvg * b[1] + vAvg * a[1])) / (12.0 * uMod);
+        matrix[1][2] = square / 12.0 + (alpha * h * (uAvg * b[1] + vAvg * a[1])) / (12.0 * uMod);
+
+        matrix[2][0] = square / 12.0 + (alpha * h * (uAvg * b[2] + vAvg * a[2])) / (12.0 * uMod);
+        matrix[2][1] = square / 12.0 + (alpha * h * (uAvg * b[2] + vAvg * a[2])) / (12.0 * uMod);
+        matrix[2][2] = square / 6.0  + (alpha * h * (uAvg * b[2] + vAvg * a[2])) / (12.0 * uMod);
+    } else
+    {
+        matrix[0][0] = square / 6.0;//  + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
+        matrix[0][1] = square / 12.0;// + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
+        matrix[0][2] = square / 12.0;// + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
+
+        matrix[1][0] = square / 12.0;// + (alpha * h * (uAvg * b[1] + vAvg * a[1])) / (12.0 * uMod);
+        matrix[1][1] = square / 6.0;//  + (alpha * h * (uAvg * b[1] + vAvg * a[1])) / (12.0 * uMod);
+        matrix[1][2] = square / 12.0;// + (alpha * h * (uAvg * b[1] + vAvg * a[1])) / (12.0 * uMod);
+
+        matrix[2][0] = square / 12.0;// + (alpha * h * (uAvg * b[2] + vAvg * a[2])) / (12.0 * uMod);
+        matrix[2][1] = square / 12.0;// + (alpha * h * (uAvg * b[2] + vAvg * a[2])) / (12.0 * uMod);
+        matrix[2][2] = square / 6.0;//  + (alpha * h * (uAvg * b[2] + vAvg * a[2])) / (12.0 * uMod);
+    }
+}
+
+
