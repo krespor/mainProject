@@ -96,11 +96,10 @@ void archiveFolder(string pathToFolder, bool deleteSource)
 {
     pathToFolder.erase(strlen(pathToFolder.c_str()) - 1);
 
-    if (runCommand("tar -cf " + pathToFolder + ".tar.gz " + pathToFolder) == 0 && deleteSource)
+    if (runCommand("tar -cf " + pathToFolder + ".tar " + pathToFolder) == 0 && runCommand("gzip  " + pathToFolder + ".tar ") == 0 && deleteSource)
     {
         runCommand("rm -rf " + pathToFolder);
     }
-
 }
 
 void writeLog(string path, string nameMesh)

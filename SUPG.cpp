@@ -48,8 +48,8 @@ void SUPG::init()
     methods.null(cn, mesh.n);
     //methods.null(v, mesh.n);
 
-    methods.actionsVC(u, 1.0 / sqrt(2), mesh.n, '=');
-    methods.actionsVC(v, 1.0 / sqrt(2), mesh.n, '=');
+    methods.actionsVC(u, 1, mesh.n, '=');
+    methods.actionsVC(v, 0, mesh.n, '=');
 
     hElem = 0;
 }
@@ -72,7 +72,7 @@ void SUPG::fillSLAE()
 
         calc_a_b();
 
-        hElem = calcH(localU, localV, mesh.square[t]);
+        hElem = 0;//calcH(localU, localV, mesh.square[t]);
 
         supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix0);
         methods.multMC(localMatrix0, 1.0 / del_t, 3);
@@ -97,13 +97,13 @@ void SUPG::fillSLAE()
 
 void SUPG::calc()
 {
-    /*for (int i = 0; i < mesh.n; i++)
+    for (int i = 0; i < mesh.n; i++)
         if ((mesh.nodes[i][0] >= 1.85) && (mesh.nodes[i][0] <= 2.15))
             if ((mesh.nodes[i][1] >= 0.35) && (mesh.nodes[i][1] <= 0.65))
                 cn[i] = 1;
-*/
 
-    cn[0] = 1;
+
+    /*cn[0] = 1;
     cn[1] = 1;
     cn[2] = 1;
     cn[3] = 1;
@@ -119,7 +119,7 @@ void SUPG::calc()
     cn[1311] = 1;
     cn[1308] = 1;
     cn[1309] = 1;
-    cn[1307] = 1;
+    cn[1307] = 1;*/
 
     recordData(vector<double *>{cn}, vector<string>{"c"});
 
@@ -128,7 +128,10 @@ void SUPG::calc()
         runTime = del_t * countIterations;
         cout << "time = " << runTime << endl;
         fillSLAE();
-
+        conditionBorder_1(0, 0);
+        conditionBorder_1(0, 1);
+        conditionBorder_1(0, 2);
+        conditionBorder_1(0, 3);
         solveSLAE(c);
 
         autoRecordData(vector<double *>{c}, vector<string>{"c"});

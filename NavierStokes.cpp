@@ -25,8 +25,8 @@ void NavierStokes::reservMemory()
     uStar = new double[mesh.n];
     vStar = new double[mesh.n];
 
-    //c = new double[mesh.n];
-    //cn = new double[mesh.n];
+    c = new double[mesh.n];
+    cn = new double[mesh.n];
 
     localU = new double[3];
     localV = new double[3];
@@ -61,13 +61,24 @@ void NavierStokes::init()
     methods.null(un, mesh.n);
     methods.null(vn, mesh.n);
 
-    //methods.null(c, mesh.n);
-    //methods.null(cn, mesh.n);
+    methods.null(c, mesh.n);
+    methods.null(cn, mesh.n);
 }
 
 void NavierStokes::calc()
 {
-    //recordData(vector<double *>{u, v}, vector<string>{"u", "v"});
+    int tb;
+    for (int i = 0; i < mesh.border[0].n;i++)
+    {
+        tb = mesh.border[0].numberNodes[i];
+
+        if (mesh.nodes[tb][1] <= 0.65 && mesh.nodes[tb][1] >= 0.35) {
+            cn[tb] = 1;
+        }
+
+    }
+
+    recordData(vector<double *>{u, v, cn}, vector<string>{"u", "v", "c"});
 
     while (runTime < endTime)
     {
@@ -97,16 +108,27 @@ void NavierStokes::calc()
 
         currectUV();
 
-        //fillSLAE_c();
-        //conditionBorder_1(0, 0);
-        //conditionBorder_1(1, 3);
-        //solveSLAE(c);
+        fillSLAE_c();
 
-        //methods.equateV(cn, c, mesh.n);
+        for (int i = 0; i < mesh.border[0].n;i++)
+        {
+            tb = mesh.border[0].numberNodes[i];
+
+            if (mesh.nodes[tb][1] <= 0.65 && mesh.nodes[tb][1] >= 0.35)
+            {
+                conditionNode_1(1, tb);
+            } else
+            {
+                conditionNode_1(0, tb);
+            }
+        }
+        solveSLAE(c);
+
+        methods.equateV(cn, c, mesh.n);
         methods.equateV(un, u, mesh.n);
         methods.equateV(vn, v, mesh.n);
 
-        autoRecordData(vector<double *>{u, v}, vector<string>{"u", "v"});
+        autoRecordData(vector<double *>{u, v, c}, vector<string>{"u", "v", "c"});
         countIterations++;
     }
 }
@@ -140,7 +162,7 @@ void NavierStokes::fillSLAE_uStar()
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
         localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
-        //dc_dx_zero(localMatrix3, 4564566545665464);
+        dc_dx_zero(localMatrix3, 2);
 
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -182,7 +204,7 @@ void NavierStokes::fillSLAE_vStar()
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
         localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
-        //dc_dy_zero(localMatrix3, 4564566545665464);
+        dc_dx_zero(localMatrix3, 2);
 
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -216,11 +238,12 @@ void NavierStokes::fillSLAE_p()
         localMatrix.laplass(localMatrix0, mesh.square[t], a, b);
 
         localMatrix.derivative(localMatrix1, b);
-        //dc_dx_zero(localMatrix1, 1654654654654654654);
+        //dc_dy_zero(localMatrix1, 1);
         methods.multMV(localMatrix1, localU, localVector0, 3);
         methods.actionsVC(localVector0, rho / del_t, 3, '*');
 
         localMatrix.derivative(localMatrix2, a);
+        //dc_dy_zero(localMatrix2, 1);
         methods.multMV(localMatrix2, localV, localVector1, 3);
         methods.actionsVC(localVector1, rho / del_t, 3, '*');
 
@@ -340,6 +363,8 @@ void NavierStokes::fillSLAE_c()
 
         //supgMatrix(b, mesh.square[t], hElem, localMatrix1);
         supgFull(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix1);
+        //dc_dy_zero(localMatrix1, 1);
+        //dc_dx_zero(localMatrix1, 2);
 
         supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix2);
         methods.multMV(localMatrix2, localVector0, localVector1, 3);

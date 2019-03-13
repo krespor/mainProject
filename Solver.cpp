@@ -214,30 +214,30 @@ void Solver::calc_a_b()
 
 void Solver::dc_dx_zero(double **localcMatrix, int numberBorder)
 {
-    int t = mesh.border[numberBorder].numberNodes[0]; //select nodes on border
+    /*int t = mesh.border[numberBorder].numberNodes[0]; //select nodes on border
     for (int i = 0; i < 3; i++)
     {
         if (x[i] == mesh.nodes[t][0])
         {
-            localcMatrix[0][i] = 0;
-            localcMatrix[1][i] = 0;
-            localcMatrix[2][i] = 0;
+            localcMatrix[i][0] = 0;
+            localcMatrix[i][1] = 0;
+            localcMatrix[i][2] = 0;
         }
-    }
+    }*/
 }
 
 void Solver::dc_dy_zero(double **localcMatrix, int numberBorder)
 {
-    int t = mesh.border[numberBorder].numberNodes[0]; //select nodes on border
+    /*int t = mesh.border[numberBorder].numberNodes[0]; //select nodes on border
     for (int i = 0; i < 3; i++)
     {
         if (y[i] == mesh.nodes[t][1])
         {
-            localcMatrix[0][i] = 0;
-            localcMatrix[1][i] = 0;
-            localcMatrix[2][i] = 0;
+            localcMatrix[i][0] = 0;
+            localcMatrix[i][1] = 0;
+            localcMatrix[i][2] = 0;
         }
-    }
+    }*/
 }
 
 
