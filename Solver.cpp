@@ -129,17 +129,20 @@ void Solver::autoRecordData(vector<double *> column, vector<string> name)
 
 void Solver::recordData(vector<double *> column, vector<string> name)
 {
-    methods.recordDataTecplot(
-            mesh.nodes,
-            mesh.n,
-            mesh.elements,
-            mesh.m,
-            column,
-            name,
-            to_string(runTime),
-            pathToResult,
-            runTime
-    );
+    if (arguments.write.record && !arguments.write.onlyLastFrame)
+    {
+        methods.recordDataTecplot(
+                mesh.nodes,
+                mesh.n,
+                mesh.elements,
+                mesh.m,
+                column,
+                name,
+                to_string(runTime),
+                pathToResult,
+                runTime
+        );
+    }
 }
 
 void Solver::conditionNode_1(double c, unsigned int dot)

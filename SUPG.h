@@ -19,7 +19,7 @@ private:
     double *localVector0, *localVector1, *localVector2, *localVector3;
     double *localU, *localV;
 
-    double hElem;
+    double hElem, d;
 
     void reservMemory();
     void init();
@@ -28,10 +28,10 @@ private:
 
     void calc();
     double calcH(double *u, double *v, double square);
+    double calcH_old(double *u, double *v, double square);
 
     void supgMatrixMass(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
-    void supgMatrix(double *b, double square, double h, double **matrix);
-
+    void supgMatrixLaplas(double *u, double *v, double h, double square, double k, double **matrix);
     void supgFull(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
 
 

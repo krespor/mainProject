@@ -15,7 +15,7 @@ using namespace std;
 using json = nlohmann::json;
 
 Mesh parseMesh(string pathToFolderOfMesh, float h, string nameMesh);
-string  createFolder(string pathToResult, string nameResult);
+string  createFolder(string pathToResult, string nameResult, bool force);
 void converteToBinary(string pathToFolder, string pathToPreplot);
 void archiveFolder(string pathToFolder, bool deleteSource);
 void createLogFolder(string pathToLog, string nameFolder);
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     Mesh mesh = parseMesh(paths.mesh, inputData["h"], inputData["mesh"]);
 
     if (arguments.write.record)
-        mesh.name = createFolder(paths.result, inputData["name"]);
+        mesh.name = createFolder(paths.result, inputData["name"], inputData["forceMode"]);
     paths.result += mesh.name + "/";
 
     createLogFolder(paths.log, mesh.name);
@@ -130,7 +130,7 @@ void converteToBinary(string pathToFolder, string pathToPreplot)
     while (currentDatFile != prevDatFile)
     {
         prevDatFile = currentDatFile;
-        if (runCommand(pathToPreplot + " " + pathToFolder + currentDatFile) == 0)
+        if (runCommand(pathToPreplot + " " + pathToFolder + currentDatFile + ">> /dev/null") == 0)
         {
             runCommand("rm -f " + pathToFolder + currentDatFile);
         }
@@ -141,7 +141,7 @@ void converteToBinary(string pathToFolder, string pathToPreplot)
     file.close();
 }
 
-string createFolder(string pathToResult, string nameResult)
+string createFolder(string pathToResult, string nameResult, bool force)
 {
     string tmp = pathToResult + nameResult;
     string tmpUnix = "mkdir " + tmp;
@@ -150,22 +150,30 @@ string createFolder(string pathToResult, string nameResult)
     {
         if (system(tmpUnix.c_str()) != 0)
         {
-            tmpUnix = "mkdir " + tmp;
-            tmpUnix += "[" + to_string(i) + "]";
+            if (force)
+            {
+                tmpUnix = "rm -rf " + tmp;
+                system(tmpUnix.c_str());
+                tmpUnix = "mkdir " + tmp;
+            } else
+            {
+                tmpUnix = "mkdir " + tmp;
+                tmpUnix += "[" + to_string(i) + "]";
+            }
         } else
         {
-            if (i == 0)
+            if (i == 0 || force)
                 pathToResult += nameResult + "/";
             else
                pathToResult += nameResult + "[" + to_string(i - 1) + "]/";
             break;
         }
     }
-    if (i != 0)
+    if (i == 0 || force)
     {
-        return nameResult + "[" + to_string(i - 1) + "]";
+        return nameResult;
     }
-    return nameResult;
+    return nameResult + "[" + to_string(i - 1) + "]";
 }
 
 void createLogFolder(string pathToLog, string nameFolder)

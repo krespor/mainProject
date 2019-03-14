@@ -8,6 +8,7 @@ NavierStokes::NavierStokes(Mesh mesh, Arguments arguments, string pathToResult) 
 {
     rho = arguments.individualArguments["rho"];
     mu = arguments.individualArguments["mu"];
+    d = arguments.individualArguments["D"];
 
     reservMemory();
     init();
@@ -358,17 +359,19 @@ void NavierStokes::fillSLAE_c()
 
         hElem = calcH(localU, localV, mesh.square[t]);
 
-        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix0);
+        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
         methods.multMC(localMatrix0, 1.0 / del_t, 3);
 
-        //supgMatrix(b, mesh.square[t], hElem, localMatrix1);
-        supgFull(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix1);
+        supgFull(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
         //dc_dy_zero(localMatrix1, 1);
         //dc_dx_zero(localMatrix1, 2);
 
-        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], 0, localMatrix2);
+        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
         methods.multMV(localMatrix2, localVector0, localVector1, 3);
         methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
+
+        supgMatrixLaplas(localU, localV, hElem, mesh.square[t], d, localMatrix2);
+        methods.multMC(localMatrix2, d, 3);
 
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -444,7 +447,7 @@ void NavierStokes::supgFull(double *a, double *b, double *u, double *v, double h
 
     if (uMod != 0)
     {
-        double alpha = 1;//(1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
+        double alpha = (1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
 
         matrix[0][0] = b[0] * (2.0*u[0] + u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[0] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
         matrix[0][1] = b[1] * (2.0*u[0] + u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[1] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
@@ -485,7 +488,7 @@ void NavierStokes::supgMatrixMass(double *a, double *b, double *u, double *v, do
 
     if (uMod != 0)
     {
-        double alpha = 1;//(1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
+        double alpha = (1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
 
         matrix[0][0] = square / 6.0  + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
         matrix[0][1] = square / 12.0 + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
@@ -513,5 +516,41 @@ void NavierStokes::supgMatrixMass(double *a, double *b, double *u, double *v, do
         matrix[2][2] = square / 6.0;//  + (alpha * h * (uAvg * b[2] + vAvg * a[2])) / (12.0 * uMod);
     }
 }
+
+void NavierStokes::supgMatrixLaplas(double *u, double *v, double h, double square, double k, double **matrix)
+{
+    double uAvg = (u[0] + u[1] + u[2]) / 3.0;
+    double vAvg = (v[0] + v[1] + v[2]) / 3.0;
+    double uMod = sqrt(uAvg * uAvg + vAvg * vAvg);
+
+    double pe = (uMod * h) / (2.0 * k);
+    double tau = (h / (2.0 * uMod)) *
+                 (1.0 / tanh(pe) - 1.0 / pe);
+
+    matrix[0][0] = ((b[0]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+    matrix[0][1] = ((b[0]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+    matrix[0][2] = ((b[0]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+
+    matrix[1][0] = ((b[1]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+    matrix[1][1] = ((b[1]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+    matrix[1][2] = ((b[1]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+
+    matrix[2][0] = ((b[2]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+    matrix[2][1] = ((b[2]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+    matrix[2][2] = ((b[2]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    matrix[0][0] += ((a[0]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+    matrix[0][1] += ((a[0]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+    matrix[0][2] += ((a[0]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+
+    matrix[1][0] += ((a[1]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+    matrix[1][1] += ((a[1]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+    matrix[1][2] += ((a[1]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+
+    matrix[2][0] += ((a[2]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+    matrix[2][1] += ((a[2]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+    matrix[2][2] += ((a[2]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+}
+
 
 

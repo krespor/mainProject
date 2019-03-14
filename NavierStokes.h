@@ -13,7 +13,7 @@ public:
 
 private:
 
-    double rho, mu;
+    double rho, mu,d ;
     double *p, *u, *v, *un, *vn, *uStar, *vStar, *c, *cn;
 
     double **localMatrix0, **localMatrix1, **localMatrix2, **localMatrix3;
@@ -33,6 +33,7 @@ private:
 
     void supgFull(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
     void supgMatrixMass(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
+    void supgMatrixLaplas(double *u, double *v, double h, double square, double k, double **matrix);
 
     void reservMemory();
     void init();
