@@ -74,12 +74,15 @@ void SUPG::fillSLAE()
 
         hElem = calcH(localU, localV, mesh.square[t]);
 
-        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
+        //localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
+        localMatrix.mass(localMatrix0, mesh.square[t]);
         methods.multMC(localMatrix0, 1.0 / del_t, 3);
 
-        supgFull(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
+        localMatrix.convectiveMembers(localMatrix1, localU, localV, a, b);
+        //localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
 
-        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
+        localMatrix.mass(localMatrix2, mesh.square[t]);
+        //localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
         methods.multMV(localMatrix2, localVector0, localVector1, 3);
         methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
 
@@ -99,10 +102,10 @@ void SUPG::fillSLAE()
 
 void SUPG::calc()
 {
-    for (int i = 0; i < mesh.n; i++)
+    /*for (int i = 0; i < mesh.n; i++)
         if ((mesh.nodes[i][0] >= 1.85) && (mesh.nodes[i][0] <= 2.15))
             if ((mesh.nodes[i][1] >= 0.35) && (mesh.nodes[i][1] <= 0.65))
-                cn[i] = 1;
+                cn[i] = 1;*/
 
     /*cn[0] = 1;
     cn[1] = 1;
@@ -122,6 +125,17 @@ void SUPG::calc()
     cn[1309] = 1;
     cn[1307] = 1;*/
 
+    int tb;
+    for (int i = 0; i < mesh.border[0].n;i++)
+    {
+        tb = mesh.border[0].numberNodes[i];
+
+        if (mesh.nodes[tb][1] <= 0.65 && mesh.nodes[tb][1] >= 0.35) {
+            cn[tb] = 1;
+        }
+
+    }
+
     recordData(vector<double *>{cn}, vector<string>{"c"});
 
     while (runTime < endTime)
@@ -129,11 +143,26 @@ void SUPG::calc()
         runTime = del_t * countIterations;
         cout << "time = " << runTime << endl;
         fillSLAE();
-        conditionBorder_1(0, 0);
-        conditionBorder_1(0, 1);
-        conditionBorder_1(0, 2);
-        conditionBorder_1(0, 3);
+        //conditionBorder_1(0, 0);
+        //conditionBorder_1(0, 1);
+        //conditionBorder_1(0, 2);
+        //conditionBorder_1(0, 3);
         solveSLAE(c);
+
+        for (int i = 0; i < mesh.border[0].n;i++)
+        {
+            tb = mesh.border[0].numberNodes[i];
+
+            if (mesh.nodes[tb][1] <= 0.65 && mesh.nodes[tb][1] >= 0.35) {
+                c[tb] = 1;
+            }
+
+        }
+
+        /*for (int i = 0; i < mesh.n; i++)
+            if ((mesh.nodes[i][0] >= 1.85) && (mesh.nodes[i][0] <= 2.15))
+                if ((mesh.nodes[i][1] >= 0.35) && (mesh.nodes[i][1] <= 0.65))
+                    c[i] = 1;*/
 
         autoRecordData(vector<double *>{c}, vector<string>{"c"});
 

@@ -235,13 +235,14 @@ struct Methods
             {
                 Sn[i] = Rn[i] - an * Vn[i];
             }
+            //cout << "n == " << sqrt(scalar(Sn, Sn, n)) << endl;
             if ((sqrt(scalar(Sn, Sn, n))) <= eps)
             {
                 for (int i = 0; i < n; i++)
                 {
                     X[i] += an * Pn1[i];
                 }
-                //cout << "iter = " << iter << endl;
+
                 delete[]Rn;
                 delete[]Pn;
                 delete[]Pn1;
@@ -276,10 +277,10 @@ struct Methods
                 {
                     Pn[i] = Pn1[i];
                 }
-
+                //cout << "n = " << sqrt(scalar(Rn, Rn, n)) << endl;
                 if ((sqrt(scalar(Rn, Rn, n))) <= eps)
                 {
-                    //cout << "iter = " << iter << endl;
+
                     delete[]Rn;
                     delete[]Pn;
                     delete[]Pn1;

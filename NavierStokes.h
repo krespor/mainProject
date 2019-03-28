@@ -13,7 +13,7 @@ public:
 
 private:
 
-    double rho, mu,d ;
+    double rho, mu, d;
     double *p, *u, *v, *un, *vn, *uStar, *vStar, *c, *cn;
 
     double **localMatrix0, **localMatrix1, **localMatrix2, **localMatrix3;

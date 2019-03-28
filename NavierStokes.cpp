@@ -69,17 +69,8 @@ void NavierStokes::init()
 void NavierStokes::calc()
 {
     int tb;
-    for (int i = 0; i < mesh.border[0].n;i++)
-    {
-        tb = mesh.border[0].numberNodes[i];
 
-        if (mesh.nodes[tb][1] <= 0.65 && mesh.nodes[tb][1] >= 0.35) {
-            cn[tb] = 1;
-        }
-
-    }
-
-    recordData(vector<double *>{u, v, cn}, vector<string>{"u", "v", "c"});
+    recordData(vector<double *>{u, v}, vector<string>{"u", "v"});
 
     while (runTime < endTime)
     {
@@ -109,14 +100,12 @@ void NavierStokes::calc()
 
         currectUV();
 
-        fillSLAE_c();
-
+        /*fillSLAE_c();
         for (int i = 0; i < mesh.border[0].n;i++)
         {
             tb = mesh.border[0].numberNodes[i];
 
-            if (mesh.nodes[tb][1] <= 0.65 && mesh.nodes[tb][1] >= 0.35)
-            {
+            if (mesh.nodes[tb][1] <= 0.65 && mesh.nodes[tb][1] >= 0.35) {
                 conditionNode_1(1, tb);
             } else
             {
@@ -125,17 +114,18 @@ void NavierStokes::calc()
         }
         solveSLAE(c);
 
-        methods.equateV(cn, c, mesh.n);
+        methods.equateV(cn, c, mesh.n);*/
         methods.equateV(un, u, mesh.n);
         methods.equateV(vn, v, mesh.n);
 
-        autoRecordData(vector<double *>{u, v, c}, vector<string>{"u", "v", "c"});
+        autoRecordData(vector<double *>{u, v}, vector<string>{"u", "v"});
         countIterations++;
     }
 }
 
 void NavierStokes::fillSLAE_uStar()
 {
+    double hElem;
     for (unsigned int t = 0; t < mesh.m; t++)
     {
         for (unsigned int i = 0; i < 3; i++)
@@ -151,18 +141,23 @@ void NavierStokes::fillSLAE_uStar()
         }
 
         calc_a_b();
+        hElem = calcH(localU, localV, mesh.square[t]);
 
-        localMatrix.mass(localMatrix0, mesh.square[t]);
+        //localMatrix.mass(localMatrix0, mesh.square[t]);
+        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
         methods.multMC(localMatrix0, 1. / del_t, 3);
 
-        localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
+        //localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
+        localMatrix.supg.laplass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
         methods.multMC(localMatrix1, mu / rho, 3);
 
-        localMatrix.mass(localMatrix2, mesh.square[t]);
+        //localMatrix.mass(localMatrix2, mesh.square[t]);
+        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
         methods.multMV(localMatrix2, localU, localVector0, 3);
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
-        localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
+        //localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
+        localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix3);
         dc_dx_zero(localMatrix3, 2);
 
         for (unsigned int i = 0; i < 3; i++)
@@ -178,6 +173,7 @@ void NavierStokes::fillSLAE_uStar()
 
 void NavierStokes::fillSLAE_vStar()
 {
+    double hElem;
     for (unsigned int t = 0; t < mesh.m; t++)
     {
         for (unsigned int i = 0; i < 3; i++)
@@ -193,18 +189,23 @@ void NavierStokes::fillSLAE_vStar()
         }
 
         calc_a_b();
+        hElem = calcH(localU, localV, mesh.square[t]);
 
-        localMatrix.mass(localMatrix0, mesh.square[t]);
+        //localMatrix.mass(localMatrix0, mesh.square[t]);
+        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
         methods.multMC(localMatrix0, 1. / del_t, 3);
 
-        localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
+        //localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
+        localMatrix.supg.laplass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
         methods.multMC(localMatrix1, mu / rho, 3);
 
-        localMatrix.mass(localMatrix2, mesh.square[t]);
+        //localMatrix.mass(localMatrix2, mesh.square[t]);
+        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
         methods.multMV(localMatrix2, localV, localVector0, 3);
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
-        localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
+        //localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
+        localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix3);
         dc_dx_zero(localMatrix3, 2);
 
         for (unsigned int i = 0; i < 3; i++)
@@ -359,14 +360,18 @@ void NavierStokes::fillSLAE_c()
 
         hElem = calcH(localU, localV, mesh.square[t]);
 
-        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
+        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
+        //supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
+        //localMatrix.mass(localMatrix0, mesh.square[t]);
         methods.multMC(localMatrix0, 1.0 / del_t, 3);
 
-        supgFull(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
-        //dc_dy_zero(localMatrix1, 1);
-        //dc_dx_zero(localMatrix1, 2);
+        localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
+        //supgFull(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
+        //localMatrix.convectiveMembers(localMatrix1, localU, localV, a, b);
 
-        supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
+        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
+        //supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
+        //localMatrix.mass(localMatrix2, mesh.square[t]);
         methods.multMV(localMatrix2, localVector0, localVector1, 3);
         methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
 
@@ -378,7 +383,7 @@ void NavierStokes::fillSLAE_c()
             B[k[i]] += localVector1[i];
             for (unsigned int j = 0; j < 3; j++)
             {
-                A[k[i]][k[j]] += localMatrix0[i][j] + localMatrix1[i][j];
+                A[k[i]][k[j]] += localMatrix0[i][j] + localMatrix1[i][j] + localMatrix2[i][j];
             }
         }
     }
@@ -445,9 +450,11 @@ void NavierStokes::supgFull(double *a, double *b, double *u, double *v, double h
     double vAvg = (v[0] + v[1] + v[2]) / 3.0;
     double uMod = sqrt(uAvg * uAvg + vAvg * vAvg);
 
-    if (uMod != 0)
+    if (fabs(uMod) > 0.0001) //1!
     {
-        double alpha = (1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
+        double alpha = 1;
+        if (k != 0)
+            alpha = (1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
 
         matrix[0][0] = b[0] * (2.0*u[0] + u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[0] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
         matrix[0][1] = b[1] * (2.0*u[0] + u [1] + u[2]) / 24.0 + uAvg * alpha * h * b[1] * (uAvg * b[0] + vAvg * a[0]) / (8.0 * square * uMod);
@@ -486,9 +493,11 @@ void NavierStokes::supgMatrixMass(double *a, double *b, double *u, double *v, do
     double vAvg = (v[0] + v[1] + v[2]) / 3.0;
     double uMod = sqrt(uAvg * uAvg + vAvg * vAvg);
 
-    if (uMod != 0)
+    if (fabs(uMod) > 0.0001)
     {
-        double alpha = (1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
+        double alpha = 1;
+        if (k != 0)
+            alpha = (1.0 / tanh((uMod * h) / (2 * k))) - (2.0 * k) / (uMod * h);
 
         matrix[0][0] = square / 6.0  + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
         matrix[0][1] = square / 12.0 + (alpha * h * (uAvg * b[0] + vAvg * a[0])) / (12.0 * uMod);
@@ -523,33 +532,43 @@ void NavierStokes::supgMatrixLaplas(double *u, double *v, double h, double squar
     double vAvg = (v[0] + v[1] + v[2]) / 3.0;
     double uMod = sqrt(uAvg * uAvg + vAvg * vAvg);
 
-    double pe = (uMod * h) / (2.0 * k);
-    double tau = (h / (2.0 * uMod)) *
-                 (1.0 / tanh(pe) - 1.0 / pe);
+    if (fabs(uMod) > 0.0001)
+    {
+        double pe = (uMod * h) / (2.0 * k);
+        double tau = (h / (2.0 * uMod));
 
-    matrix[0][0] = ((b[0]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
-    matrix[0][1] = ((b[0]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
-    matrix[0][2] = ((b[0]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+        if (k != 0)
+            tau *= (1.0 / tanh(pe) - 1.0 / pe);
 
-    matrix[1][0] = ((b[1]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
-    matrix[1][1] = ((b[1]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
-    matrix[1][2] = ((b[1]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+        matrix[0][0] = ((b[0]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+        matrix[0][1] = ((b[0]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+        matrix[0][2] = ((b[0]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
 
-    matrix[2][0] = ((b[2]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
-    matrix[2][1] = ((b[2]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
-    matrix[2][2] = ((b[2]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    matrix[0][0] += ((a[0]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
-    matrix[0][1] += ((a[0]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
-    matrix[0][2] += ((a[0]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+        matrix[1][0] = ((b[1]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+        matrix[1][1] = ((b[1]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+        matrix[1][2] = ((b[1]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
 
-    matrix[1][0] += ((a[1]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
-    matrix[1][1] += ((a[1]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
-    matrix[1][2] += ((a[1]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+        matrix[2][0] = ((b[2]*b[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+        matrix[2][1] = ((b[2]*b[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+        matrix[2][2] = ((b[2]*b[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        matrix[0][0] += ((a[0]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+        matrix[0][1] += ((a[0]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
+        matrix[0][2] += ((a[0]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[0] + vAvg * a[0]));
 
-    matrix[2][0] += ((a[2]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
-    matrix[2][1] += ((a[2]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
-    matrix[2][2] += ((a[2]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+        matrix[1][0] += ((a[1]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+        matrix[1][1] += ((a[1]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+        matrix[1][2] += ((a[1]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[1] + vAvg * a[1]));
+
+        matrix[2][0] += ((a[2]*a[0])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+        matrix[2][1] += ((a[2]*a[1])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+        matrix[2][2] += ((a[2]*a[2])/(4.0 * square)) * (1.0 / 3.0 + (tau / (2.0 * square)) * (uAvg * b[2] + vAvg * a[2]));
+    } else
+    {
+        localMatrix.laplass(matrix, square, a, b);
+    }
+
+
 }
 
 

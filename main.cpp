@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
     Paths paths;
     Arguments arguments;
-
+    cout << "NAME = " << inputData["name"] << endl;
     paths.mesh = inputData["paths"][location]["mesh"];
     paths.result = inputData["paths"][location]["result"];
     paths.log = inputData["paths"][location]["log"];
@@ -63,9 +63,10 @@ int main(int argc, char *argv[])
 
     Mesh mesh = parseMesh(paths.mesh, inputData["h"], inputData["mesh"]);
 
+    string name;
     if (arguments.write.record)
-        mesh.name = createFolder(paths.result, inputData["name"], inputData["forceMode"]);
-    paths.result += mesh.name + "/";
+        name = createFolder(paths.result, inputData["name"], inputData["forceMode"]);
+    paths.result += name + "/";
 
     createLogFolder(paths.log, mesh.name);
 
@@ -204,7 +205,6 @@ Mesh parseMesh(string pathToFolderOfMesh, float h, string nameMesh)
     string pathToMesh = pathToFolderOfMesh + nameMesh + "/" + hStr + "/" + nameMesh;
 
     ifstream file;
-
 
     file.open(pathToMesh + ".dat");
     if (!file)
