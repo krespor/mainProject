@@ -24,12 +24,21 @@ CMakeFiles/NewFEM.dir/Solver.cpp.o
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/methods.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.cpp
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.h
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/arguments.h
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/localMatrix.h
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/mesh.h
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/././structurs/methods.h
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/./Solver.h
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.cpp
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.h
 CMakeFiles/NewFEM.dir/main.cpp.o
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./././structurs/localMatrix.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./././structurs/methods.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/././Solver.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./NavierStokes.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./SUPG.h
+ /home/konstantin/Рабочий стол/project/cpp/NewFEM/./TwoPhaseFlow.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/arguments.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/mesh.h
  /home/konstantin/Рабочий стол/project/cpp/NewFEM/./structurs/paths.h

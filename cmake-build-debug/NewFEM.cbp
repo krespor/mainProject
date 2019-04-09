@@ -102,6 +102,12 @@
 		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.h">
 			<Option target="NewFEM"/>
 		</Unit>
+		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.cpp">
+			<Option target="NewFEM"/>
+		</Unit>
+		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.h">
+			<Option target="NewFEM"/>
+		</Unit>
 		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/main.cpp">
 			<Option target="NewFEM"/>
 		</Unit>

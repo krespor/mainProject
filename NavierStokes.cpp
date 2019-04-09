@@ -70,9 +70,9 @@ void NavierStokes::calc()
 {
     int tb;
 
-    recordData(vector<double *>{u, v}, vector<string>{"u", "v"});
+    recordData(vector<double *>{u, v, c}, vector<string>{"u", "v", "c"});
 
-    while (runTime < endTime)
+        while (runTime < endTime)
     {
         runTime = del_t * countIterations;
         cout << "time = " << runTime << endl;
@@ -100,7 +100,7 @@ void NavierStokes::calc()
 
         currectUV();
 
-        /*fillSLAE_c();
+        fillSLAE_c();
         for (int i = 0; i < mesh.border[0].n;i++)
         {
             tb = mesh.border[0].numberNodes[i];
@@ -114,18 +114,18 @@ void NavierStokes::calc()
         }
         solveSLAE(c);
 
-        methods.equateV(cn, c, mesh.n);*/
+        methods.equateV(cn, c, mesh.n);
         methods.equateV(un, u, mesh.n);
         methods.equateV(vn, v, mesh.n);
 
-        autoRecordData(vector<double *>{u, v}, vector<string>{"u", "v"});
+        autoRecordData(vector<double *>{u, v, c}, vector<string>{"u", "v", "c"});
         countIterations++;
     }
 }
 
 void NavierStokes::fillSLAE_uStar()
 {
-    double hElem;
+    //double hElem;
     for (unsigned int t = 0; t < mesh.m; t++)
     {
         for (unsigned int i = 0; i < 3; i++)
@@ -141,24 +141,32 @@ void NavierStokes::fillSLAE_uStar()
         }
 
         calc_a_b();
-        hElem = calcH(localU, localV, mesh.square[t]);
+        //hElem = calcH(localU, localV, mesh.square[t]);
 
-        //localMatrix.mass(localMatrix0, mesh.square[t]);
-        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
+        localMatrix.mass(localMatrix0, mesh.square[t]);
+        //localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix0);
         methods.multMC(localMatrix0, 1. / del_t, 3);
 
-        //localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
-        localMatrix.supg.laplass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
+        localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
+        //localMatrix.supg.laplass(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix1);
         methods.multMC(localMatrix1, mu / rho, 3);
 
-        //localMatrix.mass(localMatrix2, mesh.square[t]);
-        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
+        localMatrix.mass(localMatrix2, mesh.square[t]);
+        //localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix2);
         methods.multMV(localMatrix2, localU, localVector0, 3);
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
-        //localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
-        localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix3);
-        dc_dx_zero(localMatrix3, 2);
+        for (int i = 0; i < 3; i++)
+        {
+            if (x[i] == 53)
+            {
+                localU[i] = 0;
+                localV[i] = 0;
+            }
+        }
+
+        localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
+        //localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix3);
 
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -173,7 +181,7 @@ void NavierStokes::fillSLAE_uStar()
 
 void NavierStokes::fillSLAE_vStar()
 {
-    double hElem;
+    //double hElem;
     for (unsigned int t = 0; t < mesh.m; t++)
     {
         for (unsigned int i = 0; i < 3; i++)
@@ -189,24 +197,32 @@ void NavierStokes::fillSLAE_vStar()
         }
 
         calc_a_b();
-        hElem = calcH(localU, localV, mesh.square[t]);
+        //hElem = calcH(localU, localV, mesh.square[t]);
 
-        //localMatrix.mass(localMatrix0, mesh.square[t]);
-        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
+        localMatrix.mass(localMatrix0, mesh.square[t]);
+        //localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix0);
         methods.multMC(localMatrix0, 1. / del_t, 3);
 
-        //localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
-        localMatrix.supg.laplass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
+        localMatrix.laplass(localMatrix1, mesh.square[t], a, b);
+        //localMatrix.supg.laplass(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix1);
         methods.multMC(localMatrix1, mu / rho, 3);
 
-        //localMatrix.mass(localMatrix2, mesh.square[t]);
-        localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
+        localMatrix.mass(localMatrix2, mesh.square[t]);
+        //localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix2);
         methods.multMV(localMatrix2, localV, localVector0, 3);
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
-        //localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
-        localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix3);
-        dc_dx_zero(localMatrix3, 2);
+        for (int i = 0; i < 3; i++)
+        {
+            if (x[i] == 53)
+            {
+                localU[i] = 0;
+                localV[i] = 0;
+            }
+        }
+
+        localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
+        //localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix3);
 
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -240,12 +256,10 @@ void NavierStokes::fillSLAE_p()
         localMatrix.laplass(localMatrix0, mesh.square[t], a, b);
 
         localMatrix.derivative(localMatrix1, b);
-        //dc_dy_zero(localMatrix1, 1);
         methods.multMV(localMatrix1, localU, localVector0, 3);
         methods.actionsVC(localVector0, rho / del_t, 3, '*');
 
         localMatrix.derivative(localMatrix2, a);
-        //dc_dy_zero(localMatrix2, 1);
         methods.multMV(localMatrix2, localV, localVector1, 3);
         methods.actionsVC(localVector1, rho / del_t, 3, '*');
 
@@ -361,21 +375,14 @@ void NavierStokes::fillSLAE_c()
         hElem = calcH(localU, localV, mesh.square[t]);
 
         localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
-        //supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix0);
-        //localMatrix.mass(localMatrix0, mesh.square[t]);
         methods.multMC(localMatrix0, 1.0 / del_t, 3);
 
         localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
-        //supgFull(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix1);
-        //localMatrix.convectiveMembers(localMatrix1, localU, localV, a, b);
 
         localMatrix.supg.mass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
-        //supgMatrixMass(a, b, localU, localV, hElem, mesh.square[t], d, localMatrix2);
-        //localMatrix.mass(localMatrix2, mesh.square[t]);
         methods.multMV(localMatrix2, localVector0, localVector1, 3);
         methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
 
-        supgMatrixLaplas(localU, localV, hElem, mesh.square[t], d, localMatrix2);
         methods.multMC(localMatrix2, d, 3);
 
         for (unsigned int i = 0; i < 3; i++)

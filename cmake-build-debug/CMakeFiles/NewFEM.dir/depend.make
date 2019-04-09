@@ -24,11 +24,20 @@ CMakeFiles/NewFEM.dir/Solver.cpp.o: .././structurs/methods.h
 CMakeFiles/NewFEM.dir/Solver.cpp.o: ../Solver.cpp
 CMakeFiles/NewFEM.dir/Solver.cpp.o: ../Solver.h
 
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o: ../././structurs/arguments.h
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o: ../././structurs/localMatrix.h
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o: ../././structurs/mesh.h
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o: ../././structurs/methods.h
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o: .././Solver.h
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o: ../TwoPhaseFlow.cpp
+CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o: ../TwoPhaseFlow.h
+
 CMakeFiles/NewFEM.dir/main.cpp.o: .././././structurs/localMatrix.h
 CMakeFiles/NewFEM.dir/main.cpp.o: .././././structurs/methods.h
 CMakeFiles/NewFEM.dir/main.cpp.o: ../././Solver.h
 CMakeFiles/NewFEM.dir/main.cpp.o: .././NavierStokes.h
 CMakeFiles/NewFEM.dir/main.cpp.o: .././SUPG.h
+CMakeFiles/NewFEM.dir/main.cpp.o: .././TwoPhaseFlow.h
 CMakeFiles/NewFEM.dir/main.cpp.o: .././structurs/arguments.h
 CMakeFiles/NewFEM.dir/main.cpp.o: .././structurs/mesh.h
 CMakeFiles/NewFEM.dir/main.cpp.o: .././structurs/paths.h

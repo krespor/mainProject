@@ -7,6 +7,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.cpp" "/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/NavierStokes.cpp.o"
   "/home/konstantin/Рабочий стол/project/cpp/NewFEM/SUPG.cpp" "/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/SUPG.cpp.o"
   "/home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.cpp" "/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/Solver.cpp.o"
+  "/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.cpp" "/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o"
   "/home/konstantin/Рабочий стол/project/cpp/NewFEM/main.cpp" "/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

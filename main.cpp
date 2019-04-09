@@ -10,6 +10,7 @@
 
 #include "./NavierStokes.h"
 #include "./SUPG.h"
+#include "./TwoPhaseFlow.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -18,8 +19,7 @@ Mesh parseMesh(string pathToFolderOfMesh, float h, string nameMesh);
 string  createFolder(string pathToResult, string nameResult, bool force);
 void converteToBinary(string pathToFolder, string pathToPreplot);
 void archiveFolder(string pathToFolder, bool deleteSource);
-void createLogFolder(string pathToLog, string nameFolder);
-void writeLog(string path, string nameMesh);
+void writeLog(string path, string nameResult, json arg);
 
 int runCommand(string command) {return system (command.c_str());}
 
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
     Paths paths;
     Arguments arguments;
-    cout << "NAME = " << inputData["name"] << endl;
+
     paths.mesh = inputData["paths"][location]["mesh"];
     paths.result = inputData["paths"][location]["result"];
     paths.log = inputData["paths"][location]["log"];
@@ -65,18 +65,21 @@ int main(int argc, char *argv[])
 
     string name;
     if (arguments.write.record)
+    {
         name = createFolder(paths.result, inputData["name"], inputData["forceMode"]);
+        writeLog(paths.log, name, inputData);
+    }
+
     paths.result += name + "/";
-
-    createLogFolder(paths.log, mesh.name);
-
-    writeLog(paths.log, mesh.name);
 
     //SUPG *supg = new SUPG(mesh, arguments, paths.result);
     //delete supg;
 
     NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
     delete ns;
+
+    //TwoPhaseFlow *tw = new TwoPhaseFlow(mesh, arguments, paths.result);
+    //delete tw;
 
     if (inputData["replaceToBinary"])
         if(arguments.write.record)
@@ -103,13 +106,16 @@ void archiveFolder(string pathToFolder, bool deleteSource)
     }
 }
 
-void writeLog(string path, string nameMesh)
+void writeLog(string path, string nameResult, json arg)
 {
     json log =
             {
-                    {"nameMesh", nameMesh}
+                    {"h", arg["h"]},
+                    {"name", nameResult},
+                    {"mesh", arg["mesh"]},
+                    {"interval", arg["arguments"]["write"]["interval"]}
             };
-    ofstream file(path + nameMesh + "/" + "log.json");
+    ofstream file(path + nameResult + ".json");
     file << log << endl;
     file.close();
 }

@@ -48,6 +48,7 @@ protected:
     void autoRecordData(vector<double*> column, vector<string> name);
     void recordData(vector<double*> column, vector<string> name);
     void timeCutdown();
+
     void calc_a_b();
 
     void conditionNode_1(double c, unsigned int dot);

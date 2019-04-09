@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/NewFEM.dir/Solver.cpp.o"
   "CMakeFiles/NewFEM.dir/SUPG.cpp.o"
   "CMakeFiles/NewFEM.dir/NavierStokes.cpp.o"
+  "CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o"
   "NewFEM.pdb"
   "NewFEM"
 )

@@ -204,6 +204,33 @@ Solver.cpp.s:
 	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/Solver.cpp.s
 .PHONY : Solver.cpp.s
 
+TwoPhaseFlow.o: TwoPhaseFlow.cpp.o
+
+.PHONY : TwoPhaseFlow.o
+
+# target to build an object file
+TwoPhaseFlow.cpp.o:
+	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o
+.PHONY : TwoPhaseFlow.cpp.o
+
+TwoPhaseFlow.i: TwoPhaseFlow.cpp.i
+
+.PHONY : TwoPhaseFlow.i
+
+# target to preprocess a source file
+TwoPhaseFlow.cpp.i:
+	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.i
+.PHONY : TwoPhaseFlow.cpp.i
+
+TwoPhaseFlow.s: TwoPhaseFlow.cpp.s
+
+.PHONY : TwoPhaseFlow.s
+
+# target to generate assembly for a file
+TwoPhaseFlow.cpp.s:
+	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.s
+.PHONY : TwoPhaseFlow.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -249,6 +276,9 @@ help:
 	@echo "... Solver.o"
 	@echo "... Solver.i"
 	@echo "... Solver.s"
+	@echo "... TwoPhaseFlow.o"
+	@echo "... TwoPhaseFlow.i"
+	@echo "... TwoPhaseFlow.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

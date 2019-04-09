@@ -44,11 +44,11 @@ iostream
 math.h
 /home/konstantin/Рабочий стол/project/cpp/NewFEM/./math.h
 
-/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.cpp
-NavierStokes.h
-/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.cpp
+TwoPhaseFlow.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.h
 
-/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.h
+/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.h
 ./Solver.h
 /home/konstantin/Рабочий стол/project/cpp/NewFEM/./Solver.h
 

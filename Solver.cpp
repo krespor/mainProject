@@ -211,6 +211,12 @@ void Solver::timeCutdown()
 
 void Solver::calc_a_b()
 {
+    for (unsigned int i = 0; i < 3; i++)
+    {
+        x[i] = mesh.nodes[k[i]][0];
+        y[i] = mesh.nodes[k[i]][1];
+    }
+
     a[0] = x[2] - x[1];   a[1] = x[0] - x[2];   a[2] = x[1] - x[0];
     b[0] = y[1] - y[2];   b[1] = y[2] - y[0];   b[2] = y[0] - y[1];
 }
@@ -242,5 +248,4 @@ void Solver::dc_dy_zero(double **localcMatrix, int numberBorder)
         }
     }*/
 }
-
 
