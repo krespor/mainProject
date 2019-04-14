@@ -216,7 +216,20 @@ struct TwoPhase
 
     void derivativeRho(double *a, double *b, double *rho, double *u, double *v, double *vector)
     {
-        vector[0] = vector[1] = vector[2] = (rho[0]*(u[0]*b[0]+v[0]*a[0])+rho[1]*(u[1]*b[1]+v[1]*a[1])+rho[2]*(u[2]*b[2] + v[2]*a[2])) / 6.0;
+        double tmp0 = (2.0 * rho[0] + rho[1] + rho[2]) / 24.0;
+        double tmp1 = (rho[0] + 2.0 * rho[1] + rho[2]) / 24.0;
+        double tmp2 = (rho[0] + rho[1] + 2.0 * rho[2]) / 24.0;
+
+        double tmp3 = u[0]*b[0] + u[1]*b[1] + u[2]*b[2] + v[0]*a[0] + v[1]*a[1] + v[2]*a[2];
+        /*cout << "tmp0 = " << tmp0 << endl;
+        cout << "tmp0 = " << tmp1 << endl;
+        cout << "tmp0 = " << tmp2 << endl;
+        cout << "tmp0 = " << tmp3 << endl;
+        cin >> vector[0];*/
+        vector[0] = tmp0 * tmp3;
+        vector[1] = tmp1 * tmp3;
+        vector[2] = tmp2 * tmp3;
+        //vector[0] = vector[1] = vector[2] = (rho[0]*(u[0]*b[0]+v[0]*a[0])+rho[1]*(u[1]*b[1]+v[1]*a[1])+rho[2]*(u[2]*b[2] + v[2]*a[2])) / 6.0;
     }
 };
 

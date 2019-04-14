@@ -156,14 +156,14 @@ void NavierStokes::fillSLAE_uStar()
         methods.multMV(localMatrix2, localU, localVector0, 3);
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
-        for (int i = 0; i < 3; i++)
+        /*for (int i = 0; i < 3; i++)
         {
             if (x[i] == 53)
             {
                 localU[i] = 0;
                 localV[i] = 0;
             }
-        }
+        }*/
 
         localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
         //localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix3);
@@ -212,14 +212,14 @@ void NavierStokes::fillSLAE_vStar()
         methods.multMV(localMatrix2, localV, localVector0, 3);
         methods.actionsVC(localVector0, 1. / del_t, 3, '*');
 
-        for (int i = 0; i < 3; i++)
+        /*for (int i = 0; i < 3; i++)
         {
             if (x[i] == 53)
             {
                 localU[i] = 0;
                 localV[i] = 0;
             }
-        }
+        }*/
 
         localMatrix.convectiveMembers(localMatrix3, localU, localV, a, b);
         //localMatrix.supg.convectiveMembers(a, b, localU, localV, hElem, mesh.square[t], mu, localMatrix3);

@@ -99,25 +99,25 @@ void TwoPhaseFlow::calc()
         cout << "time = " << runTime << endl;
         setPhase();
 
-        fillSLAE_uStar();
+        /*fillSLAE_uStar();
         conditionBorder_1(0, 1);
         solveSLAE(uStar);
 
         fillSLAE_vStar();
         conditionBorder_1(0, 1);
-        solveSLAE(vStar);
+        solveSLAE(vStar);*/
 
         fillSLAE_p();
         conditionBorder_1(0, 0);
         solveSLAE(p);
 
-        fillSLAE_u();
+        /*fillSLAE_u();
         solveSLAE(u);
 
         fillSLAE_v();
         solveSLAE(v);
 
-        currectUV();
+        currectUV();*/
 
         /*fillSLAE_alpha();
         conditionBorder_1(0, 0);
@@ -127,8 +127,10 @@ void TwoPhaseFlow::calc()
         methods.equateV(un, u, mesh.n);
         methods.equateV(vn, v, mesh.n);
 
-        autoRecordData(vector<double *>{u, v, p, alpha, mu, rho}, vector<string>{"u", "v", "p", "alpha", "mu", "rho"});
+        autoRecordData(vector<double *>{uStar, vStar, p, alpha, mu, rho}, vector<string>{"u", "v", "p", "alpha", "mu", "rho"});
         countIterations++;
+        cout << "A" << endl;
+        cin.get();
     }
 }
 
@@ -216,16 +218,16 @@ void TwoPhaseFlow::fillSLAE_p()
         for (unsigned int i = 0; i < 3; i++)
         {
             k[i] = mesh.elements[t][i];
-            localU[i] = un[k[i]];
-            localV[i] = vn[k[i]];
+            localU[i] = uStar[k[i]];
+            localV[i] = vStar[k[i]];
             localRho[i] = rho[k[i]];
         }
         calc_a_b();
 
         localMatrix.laplass(localMatrix0, mesh.square[t], a, b);
 
-        localMatrix.twoPhase.derivativeRho(a, b, localRho, localU, localV, localVector0);
-        methods.actionsVC(localVector0, 1.0/del_t, 3, '*');
+        //localMatrix.twoPhase.derivativeRho(a, b, localRho, localU, localV, localVector0);
+        //methods.actionsVC(localVector0, 1.0/del_t, 3, '*');
 
         for (unsigned int i = 0; i < 3; i++)
         {
