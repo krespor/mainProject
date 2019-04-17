@@ -14,11 +14,11 @@ public:
 
 private:
     double mu1, mu2, rho1, rho2, g;
-    double *p, *u, *v, *un, *vn, *uStar, *vStar, *alpha, *alpha_n, *mu, *rho;
+    double *p, *u, *v, *un, *vn, *uStar, *vStar, *alpha, *alpha_n, *nu, *rho;
 
     double **localMatrix0, **localMatrix1, **localMatrix2, **localMatrix3;
     double *localVector0, *localVector1, *localVector2, *localVector3;
-    double *localU, *localV, *localP, *localRho, *localMu, *localAlpha_n;
+    double *localU, *localV, *localP, *localRho, *localNu, *localAlpha_n;
 
     void fillSLAE_uStar();
     void fillSLAE_vStar();
