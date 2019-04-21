@@ -75,11 +75,11 @@ int main(int argc, char *argv[])
     //SUPG *supg = new SUPG(mesh, arguments, paths.result);
     //delete supg;
 
-    //NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
-    //delete ns;
+    NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
+    delete ns;
 
-    TwoPhaseFlow *tw = new TwoPhaseFlow(mesh, arguments, paths.result);
-    delete tw;
+    //TwoPhaseFlow *tw = new TwoPhaseFlow(mesh, arguments, paths.result);
+    //delete tw;
 
     if (inputData["replaceToBinary"])
         if(arguments.write.record)

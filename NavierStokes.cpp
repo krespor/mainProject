@@ -72,7 +72,7 @@ void NavierStokes::calc()
 
     recordData(vector<double *>{u, v, c}, vector<string>{"u", "v", "c"});
 
-        while (runTime < endTime)
+    while (runTime < endTime)
     {
         runTime = del_t * countIterations;
         cout << "time = " << runTime << endl;

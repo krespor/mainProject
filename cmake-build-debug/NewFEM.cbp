@@ -8,28 +8,28 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug"/>
+				<Option working_dir="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug"/>
+				<Option working_dir="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="NewFEM">
-				<Option output="/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug/NewFEM" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug"/>
+				<Option output="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug/NewFEM" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -44,15 +44,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 NewFEM"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 NewFEM"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="NewFEM/fast">
-				<Option output="/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug/NewFEM" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug"/>
+				<Option output="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug/NewFEM" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -67,66 +67,66 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 NewFEM/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 NewFEM/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/konstantin/Рабочий стол/project/cpp/NewFEM/cmake-build-debug"/>
+				<Option working_dir="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/project/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/konstantin/Рабочий\ стол/projects/cpp/NewFEM/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.cpp">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/NavierStokes.cpp">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/NavierStokes.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/NavierStokes.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/SUPG.cpp">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/SUPG.cpp">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/SUPG.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/SUPG.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.cpp">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.cpp">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/Solver.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.cpp">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/TwoPhaseFlow.cpp">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/TwoPhaseFlow.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/TwoPhaseFlow.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/main.cpp">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/main.cpp">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/structurs/arguments.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/structurs/arguments.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/structurs/localMatrix.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/structurs/localMatrix.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/structurs/mesh.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/structurs/mesh.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/structurs/methods.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/structurs/methods.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/structurs/paths.h">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/structurs/paths.h">
 			<Option target="NewFEM"/>
 		</Unit>
-		<Unit filename="/home/konstantin/Рабочий стол/project/cpp/NewFEM/CMakeLists.txt">
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>
