@@ -181,7 +181,7 @@ void Solver::conditionBorder_2(double c, unsigned int numberBorder)
     unsigned int countBorderElements; //количество отрезков на данной границе
     unsigned int k1, k2;   //номера точек отрезка
 
-    for (unsigned int k = 0; k < mesh.border[numberBorder].m; k++) //цикл по отрезку
+    for (unsigned int k = 0; k < mesh.border[numberBorder].m; k++) //цикл по отрезку// {
     {
         k1 = mesh.border[numberBorder].line[k][0];     //
         k2 = mesh.border[numberBorder].line[k][1]; //  находим номера точек первого отрезка
@@ -190,6 +190,7 @@ void Solver::conditionBorder_2(double c, unsigned int numberBorder)
         Y1 = mesh.nodes[k1][1];  // берём координаты первого отрезка
         X2 = mesh.nodes[k2][0]; //
         Y2 = mesh.nodes[k2][1]; //
+
         l = methods.findLength(X1, X2, Y1, Y2); //нахождение длинны отрезка
         f = (c + c) / 2; //нахождение среднего значения функции на отрезке
         B[k1] -= l / 2 * f;

@@ -157,19 +157,82 @@ struct Supg
 
 struct TwoPhase
 {
+
+    void rhoPress(double square, double *a, double *b, double *rho, double **matrix)
+    {
+        double tempY = (rho[0] * a[0] + rho[1] * a[1] + rho[2] * a[2]) / (48.0 * square);
+        double tempX = (rho[0] * b[0] + rho[1] * b[1] + rho[2] * b[2]) / (48.0 * square);
+
+        double e0 = 2.0 / rho[0] + 1.0 / rho[1] + 1.0 / rho[2];
+        double e1 = 1.0 / rho[0] + 2.0 / rho[1] + 1.0 / rho[2];
+        double e2 = 1.0 / rho[0] + 1.0 / rho[1] + 2.0 / rho[2];
+
+        matrix[0][0] = tempY * a[0] * e0;
+        matrix[0][1] = tempY * a[1] * e0;
+        matrix[0][2] = tempY * a[2] * e0;
+
+        matrix[1][0] = tempY * a[0] * e1;
+        matrix[1][1] = tempY * a[1] * e1;
+        matrix[1][2] = tempY * a[2] * e1;
+
+        matrix[2][0] = tempY * a[0] * e2;
+        matrix[2][1] = tempY * a[1] * e2;
+        matrix[2][2] = tempY * a[2] * e2;
+        //////////////////////////////////
+        matrix[0][0] += tempX * b[0] * e0;
+        matrix[0][1] += tempX * b[1] * e0;
+        matrix[0][2] += tempX * b[2] * e0;
+
+        matrix[1][0] += tempX * b[0] * e1;
+        matrix[1][1] += tempX * b[1] * e1;
+        matrix[1][2] += tempX * b[2] * e1;
+
+        matrix[2][0] += tempX * b[0] * e2;
+        matrix[2][1] += tempX * b[1] * e2;
+        matrix[2][2] += tempX * b[2] * e2;
+    }
+
+    void rhoPress2(double square, double *a, double *b, double *rho, double **matrix)
+    {
+        double temp = (1.0 / rho[0] + 1.0 / rho[1] + 1.0 / rho[2]) / (12.0 * square);
+
+
+        matrix[0][0] = a[0] * a[0]* temp;
+        matrix[0][1] = a[1] * a[0]* temp;
+        matrix[0][2] = a[2] * a[0]* temp;
+
+        matrix[1][0] = a[0] * a[1]* temp;
+        matrix[1][1] = a[1] * a[1]* temp;
+        matrix[1][2] = a[2] * a[1]* temp;
+
+        matrix[2][0] = a[0] * a[2]* temp;
+        matrix[2][1] = a[1] * a[2]* temp;
+        matrix[2][2] = a[2] * a[2]* temp;
+////////////////////////////////////////////////////
+        matrix[0][0] += b[0] * b[0]* temp;
+        matrix[0][1] += b[1] * b[0]* temp;
+        matrix[0][2] += b[2] * b[0]* temp;
+
+        matrix[1][0] += b[0] * b[1]* temp;
+        matrix[1][1] += b[1] * b[1]* temp;
+        matrix[1][2] += b[2] * b[1]* temp;
+
+        matrix[2][0] += b[0] * b[2]* temp;
+        matrix[2][1] += b[1] * b[2]* temp;
+        matrix[2][2] += b[2] * b[2]* temp;
+    }
+
+    void derPPP(double *a, double *rho, double *p, double *vector)
+    {
+        double temp = (p[0] * a[0] + p[1] * a[1] + p[2] * a[2]) / 24.0;
+
+        vector[0] = temp * (2.0 / rho[0] + 1.0 / rho[1] + 1.0 / rho[2]);
+        vector[1] = temp * (1.0 / rho[0] + 2.0 / rho[1] + 1.0 / rho[2]);
+        vector[2] = temp * (1.0 / rho[0] + 1.0 / rho[1] + 2.0 / rho[2]);
+    }
+
     void massRho(double square, double *rho, double **matrix)
     {
-        /*matrix[0][0] = (square * (3.0 * rho[0] + rho[1] + rho[2])) / 30.0;
-        matrix[0][1] = (square * (rho[0] + rho[1] + rho[2] / 2.0)) / 30.0;
-        matrix[0][2] = (square * (rho[0] + rho[1] / 2.0 + rho[2])) / 30.0;
-
-        matrix[1][0] = (square * (rho[0] + rho[1] + rho[2] / 2.0)) / 30.0;
-        matrix[1][1] = (square * (rho[0] + 3.0 * rho[1] + rho[2])) / 30.0;
-        matrix[1][2] = (square * (rho[0] / 2.0 + rho[1] + rho[2])) / 30.0;
-
-        matrix[2][0] = (square * (rho[0] + rho[1] / 2.0 + rho[2])) / 30.0;
-        matrix[2][1] = (square * (rho[0] / 2.0 + rho[1] + rho[2])) / 30.0;
-        matrix[2][2] = (square * (rho[0] + rho[1] + 3.0 * rho[2])) / 30.0;*/
         matrix[0][0] = square * (rho[0] / 10.0 + rho[1] / 30.0 + rho[2] / 30.0);
         matrix[0][1] = square * (rho[0] / 30.0 + rho[1] / 30.0 + rho[2] / 60.0);
         matrix[0][2] = square * (rho[0] / 30.0 + rho[1] / 60.0 + rho[2] / 30.0);
@@ -181,6 +244,20 @@ struct TwoPhase
         matrix[2][0] = square * (rho[0] / 30.0 + rho[1] / 60.0 + rho[2] / 30.0);
         matrix[2][1] = square * (rho[0] / 60.0 + rho[1] / 30.0 + rho[2] / 30.0);
         matrix[2][2] = square * (rho[0] / 30.0 + rho[1] / 30.0 + rho[2] / 10.0);
+
+//        double temp = square / 12.0;
+//
+//        matrix[0][0] = temp * (2.0 * rho[0]);
+//        matrix[0][1] = temp * (rho[1]);
+//        matrix[0][2] = temp * (rho[2]);
+//
+//        matrix[1][0] = temp * (rho[0]);
+//        matrix[1][1] = temp * (2.0 * rho[1]);
+//        matrix[1][2] = temp * (rho[2]);
+//
+//        matrix[2][0] = temp * (rho[0]);
+//        matrix[2][1] = temp * (rho[1]);
+//        matrix[2][2] = temp * (2.0 * rho[2]);
     }
 
     void convectiveMembersRho(double *a, double *b, double *u, double *v, double *rho, double square, double **matrix)
@@ -204,6 +281,123 @@ struct TwoPhase
         matrix[2][0] = b[0] * uTmp2 + a[0] * vTmp2;
         matrix[2][1] = b[1] * uTmp2 + a[1] * vTmp2;
         matrix[2][2] = b[2] * uTmp2 + a[2] * vTmp2;
+    }
+
+    void laplassP(double *a, double *b, double *rho, double square, double **matrix)
+    {
+        double temp = (1.0 / rho[0] + 1.0 / rho[1] + 1.0 / rho[2]) / (12.0 * square);
+
+        matrix[0][0] = (b[0] * b[0] + a[0]* a[0]) * temp;
+        matrix[0][1] = (b[0] * b[1] + a[0]* a[1]) * temp;
+        matrix[0][2] = (b[0] * b[2] + a[0]* a[2]) * temp;
+
+        matrix[1][0] = (b[1] * b[0] + a[1]* a[0]) * temp;
+        matrix[1][1] = (b[1] * b[1] + a[1]* a[1]) * temp;
+        matrix[1][2] = (b[1] * b[2] + a[1]* a[2]) * temp;
+
+        matrix[2][0] = (b[2] * b[0] + a[2]* a[0]) * temp;
+        matrix[2][1] = (b[2] * b[1] + a[2]* a[1]) * temp;
+        matrix[2][2] = (b[2] * b[2] + a[2]* a[2]) * temp;
+
+//        double temp = 1.0 / (4.0 * square);
+//
+//        matrix[0][0] = temp * (b[0] * b[0] + a[0]* a[0]) / rho[0];
+//        matrix[0][1] = temp * (b[0] * b[1] + a[0]* a[1]) / rho[1];
+//        matrix[0][2] = temp * (b[0] * b[2] + a[0]* a[2]) / rho[2];
+//
+//        matrix[1][0] = temp * (b[1] * b[0] + a[1]* a[0]) / rho[0];
+//        matrix[1][1] = temp * (b[1] * b[1] + a[1]* a[1]) / rho[1];
+//        matrix[1][2] = temp * (b[1] * b[2] + a[1]* a[2]) / rho[2];
+//
+//        matrix[2][0] = temp * (b[2] * b[0] + a[2]* a[0]) / rho[0];
+//        matrix[2][1] = temp * (b[2] * b[1] + a[2]* a[1]) / rho[1];
+//        matrix[2][2] = temp * (b[2] * b[2] + a[2]* a[2]) / rho[2];
+
+//        double temp = (b[0] / rho[0] + b[1] / rho[1] + b[2] / rho[2]) / (12.0 * square);
+//
+//        matrix[0][0] = b[0] * temp;
+//        matrix[0][1] = b[1] * temp;
+//        matrix[0][2] = b[2] * temp;
+//
+//        matrix[1][0] = b[0] * temp;
+//        matrix[1][1] = b[1] * temp;
+//        matrix[1][2] = b[2] * temp;
+//
+//        matrix[2][0] = b[0] * temp;
+//        matrix[2][1] = b[1] * temp;
+//        matrix[2][2] = b[2] * temp;
+//
+//        temp = (a[0] / rho[0] + a[1] / rho[1] + a[2] / rho[2]) / (12.0 * square);
+//
+//        matrix[0][0] += a[0] * temp;
+//        matrix[0][1] += a[1] * temp;
+//        matrix[0][2] += a[2] * temp;
+//
+//        matrix[1][0] += a[0] * temp;
+//        matrix[1][1] += a[1] * temp;
+//        matrix[1][2] += a[2] * temp;
+//
+//        matrix[2][0] += a[0] * temp;
+//        matrix[2][1] += a[1] * temp;
+//        matrix[2][2] += a[2] * temp;
+//
+//        temp = - 1.0 / (4.0 * square);
+//        double Atemp = (b[0] / rho[0] + b[1] / rho[1] + b[2] / rho[2]) / 3.0;
+//
+//        matrix[0][0] += temp * (b[0] * (Atemp + b[0] / rho[0]));
+//        matrix[0][1] += temp * (b[1] * (Atemp + b[0] / rho[0]));
+//        matrix[0][2] += temp * (b[2] * (Atemp + b[0] / rho[0]));
+//
+//        matrix[1][0] += temp * (b[0] * (Atemp + b[1] / rho[1]));
+//        matrix[1][1] += temp * (b[1] * (Atemp + b[1] / rho[1]));
+//        matrix[1][2] += temp * (b[2] * (Atemp + b[1] / rho[1]));
+//
+//        matrix[2][0] += temp * (b[0] * (Atemp + b[2] / rho[2]));
+//        matrix[2][1] += temp * (b[1] * (Atemp + b[2] / rho[2]));
+//        matrix[2][2] += temp * (b[2] * (Atemp + b[2] / rho[2]));
+//
+//        Atemp = (a[0] / rho[0] + a[1] / rho[1] + a[2] / rho[2]) / 3.0;
+//
+//        matrix[0][0] += temp * (a[0] * (Atemp + a[0] / rho[0]));
+//        matrix[0][1] += temp * (a[1] * (Atemp + a[0] / rho[0]));
+//        matrix[0][2] += temp * (a[2] * (Atemp + a[0] / rho[0]));
+//
+//        matrix[1][0] += temp * (a[0] * (Atemp + a[1] / rho[1]));
+//        matrix[1][1] += temp * (a[1] * (Atemp + a[1] / rho[1]));
+//        matrix[1][2] += temp * (a[2] * (Atemp + a[1] / rho[1]));
+//
+//        matrix[2][0] += temp * (a[0] * (Atemp + a[2] / rho[2]));
+//        matrix[2][1] += temp * (a[1] * (Atemp + a[2] / rho[2]));
+//        matrix[2][2] += temp * (a[2] * (Atemp + a[2] / rho[2]));
+//
+//        matrix[0][0] *=-1;
+//        matrix[0][1] *=-1;
+//        matrix[0][2] *=-1;
+//
+//        matrix[1][0] *=-1;
+//        matrix[1][1] *=-1;
+//        matrix[1][2] *=-1;
+//
+//        matrix[2][0] *=-1;
+//        matrix[2][1] *=-1;
+//        matrix[2][2] *=-1;
+    }
+
+    void testLaplassMu(double *a, double *b, double *mu, double square, double **matrix)
+    {
+        /*double temp = (mu[0] + mu[1] + mu[2]) / (6.0 * square);
+
+        matrix[0][0] =
+        matrix[0][1] =
+        matrix[0][2] =
+
+        matrix[1][0] =
+        matrix[1][1] =
+        matrix[1][2] =
+
+        matrix[2][0] =
+        matrix[2][1] =
+        matrix[2][2] =*/
     }
 
     void laplassMu(double *a, double *b, double *mu, double square, double **matrix)
@@ -249,31 +443,36 @@ struct TwoPhase
         matrix[2][0] += (mu[2]*a[2]*a[0]) / 24.0;
         matrix[2][1] += (mu[2]*a[2]*a[2]) / 24.0;
         matrix[2][2] += (mu[2]*a[2]*a[2]) / 12.0;
+
     }
 
-    void derivativeRho(double *a, double *rho, double **matrix)
+    void derivativeRho(double *a, double *rho, double *v, double *vector)
     {
-        /*double tmp0 = (2.0 * rho[0] + rho[1] + rho[2]) / 24.0;
-        double tmp1 = (rho[0] + 2.0 * rho[1] + rho[2]) / 24.0;
-        double tmp2 = (rho[0] + rho[1] + 2.0 * rho[2]) / 24.0;
+        double temp = (v[0]*a[0]+v[1]*a[1]+v[2]*a[2])/24.0;
 
-        double tmp3 = u[0]*b[0] + u[1]*b[1] + u[2]*b[2] + v[0]*a[0] + v[1]*a[1] + v[2]*a[2];
-        vector[0] = tmp0 * tmp3;
-        vector[1] = tmp1 * tmp3;
-        vector[2] = tmp2 * tmp3;*/
+        vector[0] = temp * (2.0 * rho[0] + rho[1] + rho[2]);
+        vector[1] = temp * (rho[0] + 2.0 * rho[1] + rho[2]);
+        vector[2] = temp * (rho[0] + rho[1] + 2.0 * rho[2]);
+    }
 
-        matrix[0][0] = (a[0] / 2.0) * (rho[0] / 10.0 + rho[1] / 30.0 + rho[2] / 30.0);
-        matrix[0][1] = (a[1] / 2.0) * (rho[0] / 30.0 + rho[1] / 30.0 + rho[2] / 60.0);
-        matrix[0][2] = (a[2] / 2.0) * (rho[0] / 30.0 + rho[1] / 60.0 + rho[2] / 30.0);
+    void testVstarMatrix(double *rho, double square, double **matrix)
+    {
+        matrix[0][0] = (rho[0] * square) / 6.0;
+        matrix[0][1] = (rho[1] * square) / 12.0;
+        matrix[0][2] = (rho[2] * square) / 12.0;
 
-        matrix[1][0] = (a[0] / 2.0) * (rho[0] / 30.0 + rho[1] / 30.0 + rho[2] / 60.0);
-        matrix[1][1] = (a[1] / 2.0) * (rho[0] / 30.0 + rho[1] / 10.0 + rho[2] / 30.0);
-        matrix[1][2] = (a[2] / 2.0) * (rho[0] / 60.0 + rho[1] / 30.0 + rho[2] / 30.0);
+        matrix[1][0] = (rho[0] * square) / 12.0;
+        matrix[1][1] = (rho[1] * square) / 6.0;
+        matrix[1][2] = (rho[2] * square) / 12.0;
 
-        matrix[2][0] = (a[0] / 2.0) * (rho[0] / 30.0 + rho[1] / 60.0 + rho[2] / 30.0);
-        matrix[2][1] = (a[1] / 2.0) * (rho[0] / 60.0 + rho[1] / 30.0 + rho[2] / 30.0);
-        matrix[2][2] = (a[2] / 2.0) * (rho[0] / 30.0 + rho[1] / 30.0 + rho[2] / 10.0);
+        matrix[2][0] = (rho[0] * square) / 12.0;
+        matrix[2][1] = (rho[1] * square) / 12.0;
+        matrix[2][2] = (rho[2] * square) / 6.0;
+    }
 
+    void testVstarVector(double *rho, double square, double *vector)
+    {
+        vector[0] = vector[1] = vector[2] = rho[0] + rho[1] + rho[2];
     }
 };
 
@@ -298,10 +497,47 @@ struct LocalMatrix
         K[2][2] = (b[2] * b[2] + a[2] * a[2]) / square / 4.0;
     }
 
+    void laplassX(double ** K, double square, double * a, double * b)
+    {
+        K[0][0] = (b[0] * b[0]) / square / 4.0;
+        K[0][1] = (b[1] * b[0]) / square / 4.0;
+        K[0][2] = (b[2] * b[0]) / square / 4.0;
+
+        K[1][0] = (b[0] * b[1]) / square / 4.0;
+        K[1][1] = (b[1] * b[1]) / square / 4.0;
+        K[1][2] = (b[2] * b[1]) / square / 4.0;
+
+        K[2][0] = (b[0] * b[2]) / square / 4.0;
+        K[2][1] = (b[1] * b[2]) / square / 4.0;
+        K[2][2] = (b[2] * b[2]) / square / 4.0;
+    }
+
+    void laplassY(double ** K, double square, double * a, double * b)
+    {
+        K[0][0] = (a[0] * a[0]) / square / 4.0;
+        K[0][1] = (a[1] * a[0]) / square / 4.0;
+        K[0][2] = (a[2] * a[0]) / square / 4.0;
+
+        K[1][0] = (a[0] * a[1]) / square / 4.0;
+        K[1][1] = (a[1] * a[1]) / square / 4.0;
+        K[1][2] = (a[2] * a[1]) / square / 4.0;
+
+        K[2][0] = (a[0] * a[2]) / square / 4.0;
+        K[2][1] = (a[1] * a[2]) / square / 4.0;
+        K[2][2] = (a[2] * a[2]) / square / 4.0;
+    }
+
     void mass(double ** K, double square)
     {
         K[0][0] = K[1][1] = K[2][2] = square / 6.;
         K[0][1] = K[0][2] = K[1][0] = K[1][2] = K[2][0] = K[2][1] = square / 12.;
+    }
+
+    void testP(double square, double *y, double *rho, double *vector)
+    {
+        vector[0] = 9.81 * square * (rho[0] * (1.0 - y[0]) / 6.0 + rho[1] * (1.0 - y[1]) / 12.0 + rho[2] *(1.0 - y[2]) / 12.0);
+        vector[1] = 9.81 * square * (rho[0] * (1.0 - y[0]) / 12.0 + rho[1] *(1.0 - y[1]) / 6.0 + rho[2] * (1.0 - y[2]) / 12.0);
+        vector[2] = 9.81 * square * (rho[0] * (1.0 - y[0]) / 12.0 + rho[1] *(1.0 - y[1]) / 12.0 + rho[2] *(1.0 - y[2]) / 6.0);
     }
 
     void convectiveMembers(double ** K, double * f, double *g, double * a, double * b)

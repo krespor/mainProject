@@ -6,10 +6,10 @@
 
 TwoPhaseFlow::TwoPhaseFlow(Mesh mesh, Arguments arguments, string pathToResult) : Solver(mesh, arguments,pathToResult)
 {
+    rho0 = arguments.individualArguments["rho0"];
     rho1 = arguments.individualArguments["rho1"];
-    rho2 = arguments.individualArguments["rho2"];
+    mu0 = arguments.individualArguments["mu0"];
     mu1 = arguments.individualArguments["mu1"];
-    mu2 = arguments.individualArguments["mu2"];
 
     reservMemory();
     init();
@@ -30,14 +30,14 @@ void TwoPhaseFlow::reservMemory()
     alpha = new double[mesh.n];
     alpha_n = new double[mesh.n];
 
-    nu = new double[mesh.n];
+    mu = new double[mesh.n];
     rho = new double[mesh.n];
 
     localU = new double[3];
     localV = new double[3];
     localP = new double[3];
     localRho = new double[3];
-    localNu = new double[3];
+    localMu = new double[3];
     localAlpha_n = new double[3];
 
     localVector0 = new double[3];
@@ -74,63 +74,84 @@ void TwoPhaseFlow::init()
     methods.null(alpha, mesh.n);
     methods.null(alpha_n, mesh.n);
 
-    methods.null(nu, mesh.n);
+    methods.null(mu, mesh.n);
     methods.null(rho, mesh.n);
 }
 
 void TwoPhaseFlow::calc()
 {
-
     for (int i = 0; i < mesh.n; i++)
     {
-        if (mesh.nodes[i][1] <= 0.5)
-        {
+        //if (mesh.nodes[i][1] <= 0.5)
+        //    alpha_n[i] = alpha[i] = 1;
+        if ((mesh.nodes[i][1] <= 0.8) && (mesh.nodes[i][0] <= 0.3))
             alpha_n[i] = alpha[i] = 1;
-        }
+
     }
 
     setPhase();
 
-    //recordData(vector<double *>{u, v, p, alpha_n, mu, rho}, vector<string>{"u", "v", "p", "alpha", "mu", "rho"});
+    recordData(vector<double *>{uStar, vStar, p, u, v, mu, rho, alpha}, vector<string>{"u*", "v*", "p", "u", "v", "mu", "rho", "alpha"});
 
     while (runTime < endTime)
     {
         runTime = del_t * countIterations;
         cout << "time = " << runTime << endl;
+
         setPhase();
 
-        /*fillSLAE_uStar();
-        conditionBorder_1(0, 1);
-        solveSLAE(uStar);*/
+        cout << "U*" << endl;
+        fillSLAE_uStar();
+        solveSLAE(uStar);
 
+        cout << "V*" << endl;
         fillSLAE_vStar();
-        conditionBorder_1(0, 1);
         solveSLAE(vStar);
 
+        cout << "P" << endl;
         fillSLAE_p();
+        conditionBorder_2(g, 1);
         conditionBorder_1(0, 0);
         solveSLAE(p);
 
-        /*fillSLAE_u();
-        solveSLAE(u);*/
+//        for (int i = 0; i < mesh.n; i++)
+//        {
+//            double y = mesh.nodes[i][1];
+//
+//            if (y >= 0.5)
+//                p[i] = (1.0 - y) * g;
+//            else
+//        }
 
+        cout << "U" << endl;
+        fillSLAE_u();
+        solveSLAE(u);
+
+        cout << "V" << endl;
         fillSLAE_v();
         solveSLAE(v);
 
         currectUV();
 
-        /*fillSLAE_alpha();
+        cout << "alpha" << endl;
+        fillSLAE_alpha();
         conditionBorder_1(0, 0);
         solveSLAE(alpha);
 
-        methods.equateV(alpha_n, alpha, mesh.n);*/
+        for (int i = 0; i < mesh.n; i++)
+        {
+            if (alpha[i] < 0)
+                alpha[i] = 0;
+            else if (alpha[i] > 1)
+                alpha[i] = 1;
+        }
+
+        methods.equateV(alpha_n, alpha, mesh.n);
         methods.equateV(un, u, mesh.n);
         methods.equateV(vn, v, mesh.n);
 
-        autoRecordData(vector<double *>{u, v, p, alpha, nu, rho}, vector<string>{"u", "v", "p", "alpha", "mu", "rho"});
+        autoRecordData(vector<double *>{uStar, vStar, p, u, v, mu, rho, alpha}, vector<string>{"u*", "v*", "p", "u", "v", "mu", "rho", "alpha"});
         countIterations++;
-        //cout << "A" << endl;
-        //cin.get();
     }
 }
 
@@ -144,7 +165,7 @@ void TwoPhaseFlow::fillSLAE_uStar()
             localU[i] = un[k[i]];
             localV[i] = vn[k[i]];
             localRho[i] = rho[k[i]];
-            localNu[i] = nu[k[i]];
+            localMu[i] = mu[k[i]];
         }
         calc_a_b();
 
@@ -153,22 +174,24 @@ void TwoPhaseFlow::fillSLAE_uStar()
 
         localMatrix.twoPhase.convectiveMembersRho(a, b, localU, localV, localRho, mesh.square[t], localMatrix1);
 
-        localMatrix.twoPhase.laplassMu(a, b, localNu, mesh.square[t], localMatrix2);
+        //localMatrix.twoPhase.laplassMu(a, b, localMu, mesh.square[t], localMatrix2);
+        localMatrix.laplass(localMatrix2, mesh.square[t], a, b);
+        methods.multMC(localMatrix2, mu1, 3);
 
-        localMatrix.twoPhase.massRho(mesh.square[t], localRho, localMatrix3);
-        methods.multMV(localMatrix3, localU, localVector0, 3);
-        methods.actionsVC(localVector0, 1.0 / del_t, 3, '*');
+        localMatrix.mass(localMatrix3, mesh.square[t]);
+        methods.multMV(localMatrix3, localV, localVector1, 3);
+        methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
+
 
         for (unsigned int i = 0; i < 3; i++)
         {
-            B[k[i]] += localVector0[i];
+            B[k[i]] += localVector1[i];
             for (unsigned int j = 0; j < 3; j++)
             {
-                A[k[i]][k[j]] += localMatrix0[i][j] + localMatrix1[i][j] + localMatrix2[i][j];  //
+                A[k[i]][k[j]] += localMatrix0[i][j] + localMatrix1[i][j] + localMatrix2[i][j];
             }
         }
     }
-
 }
 
 void TwoPhaseFlow::fillSLAE_vStar()
@@ -181,25 +204,33 @@ void TwoPhaseFlow::fillSLAE_vStar()
             localU[i] = un[k[i]];
             localV[i] = vn[k[i]];
             localRho[i] = rho[k[i]];
-            localNu[i] = nu[k[i]];
+            localMu[i] = mu[k[i]];
         }
         calc_a_b();
 
         localMatrix.twoPhase.massRho(mesh.square[t], localRho, localMatrix0);
         methods.multMC(localMatrix0, 1.0 / del_t, 3);
 
-        localMatrix.twoPhase.laplassMu(a, b, localNu, mesh.square[t], localMatrix1);
+        localMatrix.twoPhase.convectiveMembersRho(a, b, localU, localV, localRho, mesh.square[t], localMatrix1);
 
-        localMatrix.mass(localMatrix2, mesh.square[t]);
-        methods.multMV(localMatrix2, localRho, localVector0, 3);
+        //localMatrix.twoPhase.laplassMu(a, b, localMu, mesh.square[t], localMatrix2);
+        localMatrix.laplass(localMatrix2, mesh.square[t], a, b);
+        methods.multMC(localMatrix2, mu1, 3);
+
+        localMatrix.mass(localMatrix3, mesh.square[t]);
+        methods.multMV(localMatrix3, localRho, localVector0, 3);
         methods.actionsVC(localVector0, -g, 3, '*');
+
+        localMatrix.mass(localMatrix3, mesh.square[t]);
+        methods.multMV(localMatrix3, localU, localVector1, 3);
+        methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
 
         for (unsigned int i = 0; i < 3; i++)
         {
-            B[k[i]] += localVector0[i];
+            B[k[i]] += localVector0[i] + localVector1[i];
             for (unsigned int j = 0; j < 3; j++)
             {
-                A[k[i]][k[j]] += localMatrix0[i][j] + localMatrix1[i][j];
+                A[k[i]][k[j]] += localMatrix0[i][j] + localMatrix1[i][j] + localMatrix2[i][j];
             }
         }
     }
@@ -218,17 +249,19 @@ void TwoPhaseFlow::fillSLAE_p()
         }
         calc_a_b();
 
-        localMatrix.laplass(localMatrix0, mesh.square[t], a, b);
+        localMatrix.twoPhase.laplassP(a, b, localRho, mesh.square[t], localMatrix0);
 
-        //localMatrix.twoPhase.derivativeRho(a, b, localRho, localU, localV, localVector0);
-        //methods.actionsVC(localVector0, 1.0/del_t, 3, '*');
-        localMatrix.twoPhase.derivativeRho(a, localRho, localMatrix1);
+        localMatrix.derivative(localMatrix1, a);
         methods.multMV(localMatrix1, localV, localVector0, 3);
         methods.actionsVC(localVector0, 1.0 / del_t, 3, '*');
 
+        localMatrix.derivative(localMatrix1, a);
+        methods.multMV(localMatrix1, localU, localVector1, 3);
+        methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
+
         for (unsigned int i = 0; i < 3; i++)
         {
-            B[k[i]] += localVector0[i];
+            B[k[i]] += localVector0[i] + localVector1[i];
             for (unsigned int j = 0; j < 3; j++)
             {
                 A[k[i]][k[j]] += -localMatrix0[i][j];
@@ -250,16 +283,13 @@ void TwoPhaseFlow::fillSLAE_u()
         }
         calc_a_b();
 
-        localMatrix.twoPhase.massRho(mesh.square[t], localRho, localMatrix0);
-        methods.multMC(localMatrix0, 1.0 / del_t, 3);
+        localMatrix.mass(localMatrix0, mesh.square[t]);
 
-        localMatrix.derivative(localMatrix1, b);
-        methods.multMV(localMatrix1, localP, localVector0, 3);
-        methods.actionsVC(localVector0, -1, 3, '*');
+        localMatrix.twoPhase.derPPP(b, localRho, localP, localVector0);
+        methods.actionsVC(localVector0, -del_t, 3, '*');
 
-        localMatrix.twoPhase.massRho(mesh.square[t], localRho, localMatrix1);
+        localMatrix.mass(localMatrix1, mesh.square[t]);
         methods.multMV(localMatrix1, localU, localVector1, 3);
-        methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
 
         for (unsigned int i = 0; i < 3; i++)
         {
@@ -270,7 +300,6 @@ void TwoPhaseFlow::fillSLAE_u()
             }
         }
     }
-
 }
 
 void TwoPhaseFlow::fillSLAE_v()
@@ -287,18 +316,16 @@ void TwoPhaseFlow::fillSLAE_v()
         calc_a_b();
 
         localMatrix.mass(localMatrix0, mesh.square[t]);
-        methods.multMC(localMatrix0, 1.0 / del_t, 3);
 
-        localMatrix.derivative(localMatrix1, a);
-        methods.multMV(localMatrix1, localP, localVector0, 3);
+        localMatrix.twoPhase.derPPP(a, localRho, localP, localVector0);
+        methods.actionsVC(localVector0, -del_t, 3, '*');
 
         localMatrix.mass(localMatrix1, mesh.square[t]);
         methods.multMV(localMatrix1, localV, localVector1, 3);
-        methods.actionsVC(localVector1, 1.0 / del_t, 3, '*');
 
         for (unsigned int i = 0; i < 3; i++)
         {
-            B[k[i]] += -localVector0[i] + localVector1[i];
+            B[k[i]] += localVector0[i] + localVector1[i];
             for (unsigned int j = 0; j < 3; j++)
             {
                 A[k[i]][k[j]] += localMatrix0[i][j];
@@ -348,12 +375,12 @@ void TwoPhaseFlow::fillSLAE_alpha()
 void TwoPhaseFlow::currectUV()
 {
     int t;
-
-    for (int i = 0; i<mesh.border[1].n; i++)
-    {
-        t = mesh.border[1].numberNodes[i];
-        u[t] = v[t] = 0;
-    }
+    for (int j = 0; j < mesh.countBorder; j++)
+        for (int i = 0; i<mesh.border[j].n; i++)
+        {
+            t = mesh.border[j].numberNodes[i];
+            u[t] = v[t] = 0;
+        }
 }
 
 double TwoPhaseFlow::calcH(double *u, double *v, double square)
@@ -375,14 +402,46 @@ void TwoPhaseFlow::setPhase()
 {
     for (int i = 0; i<mesh.n; i++)
     {
-        if (alpha_n[i] > 0.98)
-        {
-            nu[i] = mu2 / rho2;
-            rho[i] = rho2;
-        } else
-        {
-            nu[i] = mu1 / rho1;
-            rho[i] = rho1;
-        }
+        rho[i] = (1 - alpha[i]) * rho0 + alpha[i] * rho1;
+        mu[i] = (1 - alpha[i]) * mu0 + alpha[i] * mu1;
     }
 }
+
+void TwoPhaseFlow::bcPressure()
+{
+    unsigned int numberBorder = 1;
+
+    double f;  // среднее значение функции на отрезке
+    double X1, Y1, X2, Y2;   //координаты отрезка
+    double l; //длинна отрезка
+    int k1, k2;   //номера точек отрезка
+
+    for (unsigned int k = 0; k < mesh.border[numberBorder].m; k++) //цикл по отрезку// {
+    {
+        k1 = mesh.border[numberBorder].line[k][0];     //
+        k2 = mesh.border[numberBorder].line[k][1]; //  находим номера точек первого отрезка
+
+        X1 = mesh.nodes[k1][0]; //
+        Y1 = mesh.nodes[k1][1]; // берём координаты первого отрезка
+        X2 = mesh.nodes[k2][0]; //
+        Y2 = mesh.nodes[k2][1]; //
+
+        double c1 = rho1 * g;
+        double c2 = rho1 * g;
+
+        cout << rho1 << endl;
+        l = methods.findLength(X1, X2, Y1, Y2); //нахождение длинны отрезка
+        f = (c1 + c2) / 2; //нахождение среднего значения функции на отрезке
+        B[k1] -= l / 2 * f;
+        B[k2] -= l / 2 * f;
+
+        cout << B[k1] << endl;
+    }
+}
+
+
+
+
+
+
+

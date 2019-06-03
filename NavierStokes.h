@@ -31,13 +31,15 @@ private:
     void privateBorderCondition();
     double calcH(double *u, double *v, double square);
 
-    void supgFull(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
-    void supgMatrixMass(double *a, double *b, double *u, double *v, double h, double square, double k, double **matrix);
-    void supgMatrixLaplas(double *u, double *v, double h, double square, double k, double **matrix);
-
     void reservMemory();
     void init();
     void calc();
+
+    void calcBackwardStep();
+    void calcCaverna();
+    void calcTwoPhaseFlow();
+
+    void bc45();
 
 };
 

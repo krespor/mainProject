@@ -16,7 +16,7 @@ using namespace std;
 using json = nlohmann::json;
 
 Mesh parseMesh(string pathToFolderOfMesh, float h, string nameMesh);
-string  createFolder(string pathToResult, string nameResult, bool force);
+string createFolder(string pathToResult, string nameResult, bool force);
 void converteToBinary(string pathToFolder, string pathToPreplot);
 void archiveFolder(string pathToFolder, bool deleteSource);
 void writeLog(string path, string nameResult, json arg);
@@ -75,11 +75,9 @@ int main(int argc, char *argv[])
     //SUPG *supg = new SUPG(mesh, arguments, paths.result);
     //delete supg;
 
-    NavierStokes *ns = new NavierStokes(mesh, arguments, paths.result);
-    delete ns;
+    //NavierStokes ns(mesh, arguments, paths.result);
 
-    //TwoPhaseFlow *tw = new TwoPhaseFlow(mesh, arguments, paths.result);
-    //delete tw;
+    TwoPhaseFlow twf(mesh, arguments, paths.result);
 
     if (inputData["replaceToBinary"])
         if(arguments.write.record)
