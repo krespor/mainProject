@@ -21,14 +21,10 @@ private:
     double *localU, *localV, *localP, *localRho, *localMu, *localAlpha_n;
 
     void fillSLAE_uStar();
-    void fillSLAE_testVstar();
     void fillSLAE_vStar();
     void fillSLAE_p();
-    void fillSLAE_testP();
-    void fillSLAE_testPavg();
     void fillSLAE_u();
     void fillSLAE_v();
-    void fillSLAE_testV();
     void fillSLAE_alpha();
 
     void bcPressure();

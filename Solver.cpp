@@ -84,6 +84,7 @@ void Solver::solveSLAE(double *vectorResult)
 
 void Solver::autoRecordData(vector<double *> column, vector<string> name)
 {
+    cout << "time = " << runTime << endl;
 
     if (arguments.write.record)
     {
@@ -196,18 +197,6 @@ void Solver::conditionBorder_2(double c, unsigned int numberBorder)
         B[k1] -= l / 2 * f;
         B[k2] -= l / 2 * f;
     }
-}
-
-void Solver::timeCutdown()
-{
-    if (runTime == 0)
-    {
-        cout << "0.0 %" << endl;
-    } else
-    {
-        cout << (endTime / runTime) * 100 << " %" << endl;
-    }
-
 }
 
 void Solver::calc_a_b()

@@ -158,70 +158,6 @@ struct Supg
 struct TwoPhase
 {
 
-    void rhoPress(double square, double *a, double *b, double *rho, double **matrix)
-    {
-        double tempY = (rho[0] * a[0] + rho[1] * a[1] + rho[2] * a[2]) / (48.0 * square);
-        double tempX = (rho[0] * b[0] + rho[1] * b[1] + rho[2] * b[2]) / (48.0 * square);
-
-        double e0 = 2.0 / rho[0] + 1.0 / rho[1] + 1.0 / rho[2];
-        double e1 = 1.0 / rho[0] + 2.0 / rho[1] + 1.0 / rho[2];
-        double e2 = 1.0 / rho[0] + 1.0 / rho[1] + 2.0 / rho[2];
-
-        matrix[0][0] = tempY * a[0] * e0;
-        matrix[0][1] = tempY * a[1] * e0;
-        matrix[0][2] = tempY * a[2] * e0;
-
-        matrix[1][0] = tempY * a[0] * e1;
-        matrix[1][1] = tempY * a[1] * e1;
-        matrix[1][2] = tempY * a[2] * e1;
-
-        matrix[2][0] = tempY * a[0] * e2;
-        matrix[2][1] = tempY * a[1] * e2;
-        matrix[2][2] = tempY * a[2] * e2;
-        //////////////////////////////////
-        matrix[0][0] += tempX * b[0] * e0;
-        matrix[0][1] += tempX * b[1] * e0;
-        matrix[0][2] += tempX * b[2] * e0;
-
-        matrix[1][0] += tempX * b[0] * e1;
-        matrix[1][1] += tempX * b[1] * e1;
-        matrix[1][2] += tempX * b[2] * e1;
-
-        matrix[2][0] += tempX * b[0] * e2;
-        matrix[2][1] += tempX * b[1] * e2;
-        matrix[2][2] += tempX * b[2] * e2;
-    }
-
-    void rhoPress2(double square, double *a, double *b, double *rho, double **matrix)
-    {
-        double temp = (1.0 / rho[0] + 1.0 / rho[1] + 1.0 / rho[2]) / (12.0 * square);
-
-
-        matrix[0][0] = a[0] * a[0]* temp;
-        matrix[0][1] = a[1] * a[0]* temp;
-        matrix[0][2] = a[2] * a[0]* temp;
-
-        matrix[1][0] = a[0] * a[1]* temp;
-        matrix[1][1] = a[1] * a[1]* temp;
-        matrix[1][2] = a[2] * a[1]* temp;
-
-        matrix[2][0] = a[0] * a[2]* temp;
-        matrix[2][1] = a[1] * a[2]* temp;
-        matrix[2][2] = a[2] * a[2]* temp;
-////////////////////////////////////////////////////
-        matrix[0][0] += b[0] * b[0]* temp;
-        matrix[0][1] += b[1] * b[0]* temp;
-        matrix[0][2] += b[2] * b[0]* temp;
-
-        matrix[1][0] += b[0] * b[1]* temp;
-        matrix[1][1] += b[1] * b[1]* temp;
-        matrix[1][2] += b[2] * b[1]* temp;
-
-        matrix[2][0] += b[0] * b[2]* temp;
-        matrix[2][1] += b[1] * b[2]* temp;
-        matrix[2][2] += b[2] * b[2]* temp;
-    }
-
     void derPPP(double *a, double *rho, double *p, double *vector)
     {
         double temp = (p[0] * a[0] + p[1] * a[1] + p[2] * a[2]) / 24.0;
@@ -244,20 +180,6 @@ struct TwoPhase
         matrix[2][0] = square * (rho[0] / 30.0 + rho[1] / 60.0 + rho[2] / 30.0);
         matrix[2][1] = square * (rho[0] / 60.0 + rho[1] / 30.0 + rho[2] / 30.0);
         matrix[2][2] = square * (rho[0] / 30.0 + rho[1] / 30.0 + rho[2] / 10.0);
-
-//        double temp = square / 12.0;
-//
-//        matrix[0][0] = temp * (2.0 * rho[0]);
-//        matrix[0][1] = temp * (rho[1]);
-//        matrix[0][2] = temp * (rho[2]);
-//
-//        matrix[1][0] = temp * (rho[0]);
-//        matrix[1][1] = temp * (2.0 * rho[1]);
-//        matrix[1][2] = temp * (rho[2]);
-//
-//        matrix[2][0] = temp * (rho[0]);
-//        matrix[2][1] = temp * (rho[1]);
-//        matrix[2][2] = temp * (2.0 * rho[2]);
     }
 
     void convectiveMembersRho(double *a, double *b, double *u, double *v, double *rho, double square, double **matrix)
@@ -383,96 +305,74 @@ struct TwoPhase
 //        matrix[2][2] *=-1;
     }
 
-    void testLaplassMu(double *a, double *b, double *mu, double square, double **matrix)
+    void laplassMuX(double *a, double *b, double *mu, double *v, double square, double *vector, double **matrix)
     {
-        /*double temp = (mu[0] + mu[1] + mu[2]) / (6.0 * square);
+        double temp = (mu[0] + mu[1] + mu[2]) / (6.0 * square);
 
-        matrix[0][0] =
-        matrix[0][1] =
-        matrix[0][2] =
+        matrix[0][0] = temp * b[0] * b[0];
+        matrix[0][1] = temp * b[0] * b[1];
+        matrix[0][2] = temp * b[0] * b[2];
 
-        matrix[1][0] =
-        matrix[1][1] =
-        matrix[1][2] =
+        matrix[1][0] = temp * b[1] * b[0];
+        matrix[1][1] = temp * b[1] * b[1];
+        matrix[1][2] = temp * b[1] * b[2];
 
-        matrix[2][0] =
-        matrix[2][1] =
-        matrix[2][2] =*/
+        matrix[2][0] = temp * b[2] * b[0];
+        matrix[2][1] = temp * b[2] * b[1];
+        matrix[2][2] = temp * b[2] * b[2];
+
+        temp /= 2.0;
+
+        matrix[0][0] += temp * a[0] * a[0];
+        matrix[0][1] += temp * a[0] * a[1];
+        matrix[0][2] += temp * a[0] * a[2];
+
+        matrix[1][0] += temp * a[1] * a[0];
+        matrix[1][1] += temp * a[1] * a[1];
+        matrix[1][2] += temp * a[1] * a[2];
+
+        matrix[2][0] += temp * a[2] * a[0];
+        matrix[2][1] += temp * a[2] * a[1];
+        matrix[2][2] += temp * a[2] * a[2];
+
+        vector[0] = temp * a[0] * (b[0] * v[0] + b[1] * v[1] + b[2] * v[2]);
+        vector[1] = temp * a[1] * (b[0] * v[0] + b[1] * v[1] + b[2] * v[2]);
+        vector[2] = temp * a[2] * (b[0] * v[0] + b[1] * v[1] + b[2] * v[2]);
     }
 
-    void laplassMu(double *a, double *b, double *mu, double square, double **matrix)
+    void laplassMuY(double *a, double *b, double *mu, double *u, double square, double *vector, double **matrix)
     {
-        /*double tmp0 = 2.0 * mu[0] + mu[1] + mu[2];
-        double tmp1 = mu[0] + 2.0 * mu[1] + mu[2];
-        double tmp2 = mu[0] + mu[1] + 2.0 * mu[2];
+        double temp = (mu[0] + mu[1] + mu[2]) / (6.0 * square);
 
-        matrix[0][0] = ((b[0] * b[0] + a[0] * a[0]) * tmp0) / (48.0 * square);
-        matrix[0][1] = ((b[0] * b[1] + a[0] * a[1]) * tmp0) / (48.0 * square);
-        matrix[0][2] = ((b[0] * b[2] + a[0] * a[2]) * tmp0) / (48.0 * square);
+        matrix[0][0] = temp * a[0] * a[0];
+        matrix[0][1] = temp * a[0] * a[1];
+        matrix[0][2] = temp * a[0] * a[2];
 
-        matrix[1][0] = ((b[1] * b[0] + a[1] * a[0]) * tmp1) / (48.0 * square);
-        matrix[1][1] = ((b[1] * b[1] + a[1] * a[1]) * tmp1) / (48.0 * square);
-        matrix[1][2] = ((b[1] * b[2] + a[1] * a[2]) * tmp1) / (48.0 * square);
+        matrix[1][0] = temp * a[1] * a[0];
+        matrix[1][1] = temp * a[1] * a[1];
+        matrix[1][2] = temp * a[1] * a[2];
 
-        matrix[2][0] = ((b[2] * b[0] + a[2] * a[0]) * tmp2) / (48.0 * square);
-        matrix[2][1] = ((b[2] * b[1] + a[2] * a[1]) * tmp2) / (48.0 * square);
-        matrix[2][2] = ((b[2] * b[2] + a[2] * a[2]) * tmp2) / (48.0 * square);*/
+        matrix[2][0] = temp * a[2] * a[0];
+        matrix[2][1] = temp * a[2] * a[1];
+        matrix[2][2] = temp * a[2] * a[2];
 
-        matrix[0][0] = (mu[0]*b[0]*b[0]) / 12.0;
-        matrix[0][1] = (mu[0]*b[0]*b[2]) / 24.0;
-        matrix[0][2] = (mu[0]*b[0]*b[2]) / 24.0;
+        temp /= 2.0;
 
-        matrix[1][0] = (mu[1]*b[1]*b[0]) / 24.0;
-        matrix[1][1] = (mu[1]*b[1]*b[2]) / 12.0;
-        matrix[1][2] = (mu[1]*b[1]*b[2]) / 24.0;
+        matrix[0][0] += temp * b[0] * b[0];
+        matrix[0][1] += temp * b[0] * b[1];
+        matrix[0][2] += temp * b[0] * b[2];
 
-        matrix[2][0] = (mu[2]*b[2]*b[0]) / 24.0;
-        matrix[2][1] = (mu[2]*b[2]*b[2]) / 24.0;
-        matrix[2][2] = (mu[2]*b[2]*b[2]) / 12.0;
+        matrix[1][0] += temp * b[1] * b[0];
+        matrix[1][1] += temp * b[1] * b[1];
+        matrix[1][2] += temp * b[1] * b[2];
 
+        matrix[2][0] += temp * b[2] * b[0];
+        matrix[2][1] += temp * b[2] * b[1];
+        matrix[2][2] += temp * b[2] * b[2];
 
-
-        matrix[0][0] += (mu[0]*a[0]*a[0]) / 12.0;
-        matrix[0][1] += (mu[0]*a[0]*a[2]) / 24.0;
-        matrix[0][2] += (mu[0]*a[0]*a[2]) / 24.0;
-
-        matrix[1][0] += (mu[1]*a[1]*a[0]) / 24.0;
-        matrix[1][1] += (mu[1]*a[1]*a[2]) / 12.0;
-        matrix[1][2] += (mu[1]*a[1]*a[2]) / 24.0;
-
-        matrix[2][0] += (mu[2]*a[2]*a[0]) / 24.0;
-        matrix[2][1] += (mu[2]*a[2]*a[2]) / 24.0;
-        matrix[2][2] += (mu[2]*a[2]*a[2]) / 12.0;
-
-    }
-
-    void derivativeRho(double *a, double *rho, double *v, double *vector)
-    {
-        double temp = (v[0]*a[0]+v[1]*a[1]+v[2]*a[2])/24.0;
-
-        vector[0] = temp * (2.0 * rho[0] + rho[1] + rho[2]);
-        vector[1] = temp * (rho[0] + 2.0 * rho[1] + rho[2]);
-        vector[2] = temp * (rho[0] + rho[1] + 2.0 * rho[2]);
-    }
-
-    void testVstarMatrix(double *rho, double square, double **matrix)
-    {
-        matrix[0][0] = (rho[0] * square) / 6.0;
-        matrix[0][1] = (rho[1] * square) / 12.0;
-        matrix[0][2] = (rho[2] * square) / 12.0;
-
-        matrix[1][0] = (rho[0] * square) / 12.0;
-        matrix[1][1] = (rho[1] * square) / 6.0;
-        matrix[1][2] = (rho[2] * square) / 12.0;
-
-        matrix[2][0] = (rho[0] * square) / 12.0;
-        matrix[2][1] = (rho[1] * square) / 12.0;
-        matrix[2][2] = (rho[2] * square) / 6.0;
-    }
-
-    void testVstarVector(double *rho, double square, double *vector)
-    {
-        vector[0] = vector[1] = vector[2] = rho[0] + rho[1] + rho[2];
+        vector[0] = temp * b[0] * (a[0] * u[0] + a[1] * u[1] + a[2] * u[2]);
+        vector[1] = temp * b[1] * (a[0] * u[0] + a[1] * u[1] + a[2] * u[2]);
+        vector[2] = temp * b[2] * (a[0] * u[0] + a[1] * u[1] + a[2] * u[2]);
     }
 };
 

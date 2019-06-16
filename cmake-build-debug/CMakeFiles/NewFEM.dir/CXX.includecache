@@ -6,21 +6,21 @@
 
 #IncludeRegexTransform: 
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/arguments.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/arguments.h
 nlohmann/json.hpp
 -
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/localMatrix.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/localMatrix.h
 math.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/math.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/math.h
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/mesh.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/mesh.h
 iostream
 -
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/methods.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/methods.h
 math.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/math.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/math.h
 vector
 -
 iostream
@@ -30,25 +30,21 @@ fstream
 map
 -
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./Solver.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.cpp
+Solver.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.h
+
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.h
 ./structurs/mesh.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/mesh.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/mesh.h
 ./structurs/arguments.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/arguments.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/arguments.h
 ./structurs/localMatrix.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/localMatrix.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/localMatrix.h
 ./structurs/methods.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/methods.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/methods.h
 iostream
 -
 math.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./math.h
-
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/TwoPhaseFlow.cpp
-TwoPhaseFlow.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/TwoPhaseFlow.h
-
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/TwoPhaseFlow.h
-./Solver.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./Solver.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/math.h
 

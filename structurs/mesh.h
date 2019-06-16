@@ -16,7 +16,6 @@ struct Border
 
 struct Mesh
 {
-    std::string name;
     float h;
     unsigned int n, m;
     double **nodes;

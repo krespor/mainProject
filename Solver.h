@@ -44,10 +44,9 @@ protected:
     vector<map<unsigned int, double>> A;
     double *B;
 
-    void solveSLAE(double *vecorResult);
+    void solveSLAE(double *vectorResult);
     void autoRecordData(vector<double*> column, vector<string> name);
     void recordData(vector<double*> column, vector<string> name);
-    void timeCutdown();
 
     void calc_a_b();
 
