@@ -9,12 +9,12 @@
 
 class NavierStokes : Solver{
 public:
-    NavierStokes(Mesh mesh, Arguments arguments, string pathToResult);
+    NavierStokes();
 
 private:
 
     double rho, mu, d;
-    double *p, *u, *v, *un, *vn, *uStar, *vStar, *c, *cn;
+    double *p, *u, *v, *un, *vn, *uStar, *vStar;
 
     double **localMatrix0, **localMatrix1, **localMatrix2, **localMatrix3;
     double *localVector0, *localVector1, *localVector2, *localVector3;
@@ -33,14 +33,8 @@ private:
 
     void reservMemory();
     void init();
-    void calc();
 
     void calcBackwardStep();
-    void calcCaverna();
-    void calcTwoPhaseFlow();
-
-    void bc45();
-
 };
 
 

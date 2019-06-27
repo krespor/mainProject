@@ -84,6 +84,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Manager.cpp">
+			<Option target="NewFEM"/>
+		</Unit>
+		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Manager.h">
+			<Option target="NewFEM"/>
+		</Unit>
 		<Unit filename="/home/konstantin/Рабочий стол/projects/cpp/NewFEM/NavierStokes.cpp">
 			<Option target="NewFEM"/>
 		</Unit>

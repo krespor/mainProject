@@ -10,7 +10,7 @@
 class SUPG : Solver{
 
 public:
-    SUPG(Mesh mesh, Arguments arguments, string pathToResult);
+    SUPG();
 
 private:
 

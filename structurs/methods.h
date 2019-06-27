@@ -297,40 +297,6 @@ struct Methods
             iter++;
         }
     }
-
-    void recordDataTecplot(double ** nodes, unsigned int n, unsigned int ** elements, unsigned int m, vector<double*> column, vector<string> nameColumn, string nameFile, string path, float time)
-    {
-        ofstream file;
-
-        file.open(path + nameFile + ".dat");
-
-        file << "VARIABLES = X, Y,";
-        file.precision(12);
-
-        for (string nc : nameColumn)
-        {
-            file << " ," << nc;
-        }
-
-        file << endl;
-        file << "ZONE T=\"" + to_string(time)  + "\", N=" << n << ", E=" << m << ", DATAPACKING=POINT, ZONETYPE=FETRIANGLE" << endl;
-
-        for (unsigned int i = 0; i < n; i++)
-        {
-            file << nodes[i][0] << " " << nodes[i][1] << " ";
-            for (unsigned int j = 0; j < column.size(); j++)
-            {
-                file << column[j][i] << " ";
-            }
-            file << endl;
-        }
-
-        for (unsigned int i = 0; i < m; i++)
-        {
-            file << elements[i][0] + 1 << " " << elements[i][1] + 1 << " " << elements[i][2] + 1 << endl;
-        }
-        file.close();
-    }
 };
 
 #endif //NEWFEM_METHODS_H

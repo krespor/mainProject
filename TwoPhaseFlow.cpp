@@ -4,7 +4,7 @@
 
 #include "TwoPhaseFlow.h"
 
-TwoPhaseFlow::TwoPhaseFlow(Mesh mesh, Arguments arguments, string pathToResult) : Solver(mesh, arguments,pathToResult)
+TwoPhaseFlow::TwoPhaseFlow() : Solver()
 {
     rho0 = arguments.individualArguments["rho0"];
     rho1 = arguments.individualArguments["rho1"];

@@ -10,7 +10,7 @@
 class TwoPhaseFlow : Solver{
 
 public:
-    TwoPhaseFlow(Mesh mesh, Arguments arguments, string pathToResult);
+    TwoPhaseFlow();
 
 private:
     double mu0, mu1, rho0, rho1, g;

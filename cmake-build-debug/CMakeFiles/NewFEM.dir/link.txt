@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/NewFEM.dir/main.cpp.o CMakeFiles/NewFEM.dir/Solver.cpp.o CMakeFiles/NewFEM.dir/SUPG.cpp.o CMakeFiles/NewFEM.dir/NavierStokes.cpp.o CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o  -o NewFEM 
+/usr/bin/c++  -g   CMakeFiles/NewFEM.dir/main.cpp.o CMakeFiles/NewFEM.dir/Solver.cpp.o CMakeFiles/NewFEM.dir/SUPG.cpp.o CMakeFiles/NewFEM.dir/NavierStokes.cpp.o CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o CMakeFiles/NewFEM.dir/Manager.cpp.o  -o NewFEM 

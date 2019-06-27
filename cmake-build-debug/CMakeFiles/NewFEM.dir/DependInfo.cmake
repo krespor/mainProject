@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Manager.cpp" "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/Manager.cpp.o"
   "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/NavierStokes.cpp" "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/NavierStokes.cpp.o"
   "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/SUPG.cpp" "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/SUPG.cpp.o"
   "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.cpp" "/home/konstantin/Рабочий стол/projects/cpp/NewFEM/cmake-build-debug/CMakeFiles/NewFEM.dir/Solver.cpp.o"

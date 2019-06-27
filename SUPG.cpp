@@ -4,7 +4,7 @@
 
 #include "SUPG.h"
 
-SUPG::SUPG(Mesh mesh, Arguments arguments, string pathToResult) : Solver(mesh, arguments, pathToResult)
+SUPG::SUPG() : Solver()
 {
     d = arguments.individualArguments["D"];
     reservMemory();

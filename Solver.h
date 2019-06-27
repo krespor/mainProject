@@ -10,17 +10,18 @@
 #include "./structurs/localMatrix.h"
 #include "./structurs/methods.h"
 
+#include "./Manager.h"
+
 #include <iostream>
 #include "math.h"
 
 using namespace std;
 
-
-
 class Solver {
 
 public:
-    Solver(Mesh mesh, Arguments arguments, string pathToResult);
+    Solver();
+    ~Solver();
 
 protected:
     Methods methods;
@@ -28,8 +29,6 @@ protected:
     Mesh mesh;
     Arguments arguments;
     LocalMatrix localMatrix;
-
-    string pathToResult;
 
     double *x, *y, *a, *b;
     int *k;
@@ -53,9 +52,6 @@ protected:
     void conditionNode_1(double c, unsigned int dot);
     void conditionBorder_1(double c, unsigned int numberBorder);
     void conditionBorder_2(double c, unsigned int numberBorder);
-
-    void dc_dx_zero(double **localcMatrix, int numberBorder);
-    void dc_dy_zero(double **localcMatrix, int numberBorder);
 
 private:
     void init();

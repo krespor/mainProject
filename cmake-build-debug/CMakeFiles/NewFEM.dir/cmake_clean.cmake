@@ -4,6 +4,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/NewFEM.dir/SUPG.cpp.o"
   "CMakeFiles/NewFEM.dir/NavierStokes.cpp.o"
   "CMakeFiles/NewFEM.dir/TwoPhaseFlow.cpp.o"
+  "CMakeFiles/NewFEM.dir/Manager.cpp.o"
   "NewFEM.pdb"
   "NewFEM"
 )

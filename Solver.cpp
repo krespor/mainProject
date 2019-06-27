@@ -4,11 +4,10 @@
 
 #include "Solver.h"
 
-Solver::Solver(Mesh mesh, Arguments arguments, string pathToResult)
+Solver::Solver()
 {
-    this->mesh = mesh;
-    this->arguments = arguments;
-    this->pathToResult = pathToResult;
+    this->mesh = Manager::mesh;
+    this->arguments = Manager::arguments;
 
     reservMemory();
     init();
@@ -36,6 +35,7 @@ void Solver::init()
     h = mesh.h;
 
     startTime = arguments.time.start;
+
     endTime = arguments.time.end;
 
     if (arguments.time.del_t == 0)
@@ -92,37 +92,15 @@ void Solver::autoRecordData(vector<double *> column, vector<string> name)
         {
             if (runTime - intervalRecord * tempTime >= 0)
             {
-                methods.recordDataTecplot(
-                        mesh.nodes,
-                        mesh.n,
-                        mesh.elements,
-                        mesh.m,
-                        column,
-                        name,
-                        to_string(runTime),
-                        pathToResult,
-                        runTime
-                );
-
+                Manager::recordDataTecplot(column, name, runTime);
                 tempTime++;
             }
-
 
         } else
         {
             if (runTime >= endTime)
             {
-                methods.recordDataTecplot(
-                        mesh.nodes,
-                        mesh.n,
-                        mesh.elements,
-                        mesh.m,
-                        column,
-                        name,
-                        to_string(runTime) + "_last",
-                        pathToResult,
-                        runTime
-                        );
+                Manager::recordDataTecplot(column, name, runTime);
             }
         }
     }
@@ -131,19 +109,7 @@ void Solver::autoRecordData(vector<double *> column, vector<string> name)
 void Solver::recordData(vector<double *> column, vector<string> name)
 {
     if (arguments.write.record && !arguments.write.onlyLastFrame)
-    {
-        methods.recordDataTecplot(
-                mesh.nodes,
-                mesh.n,
-                mesh.elements,
-                mesh.m,
-                column,
-                name,
-                to_string(runTime),
-                pathToResult,
-                runTime
-        );
-    }
+        Manager::recordDataTecplot(column, name, runTime);
 }
 
 void Solver::conditionNode_1(double c, unsigned int dot)
@@ -211,31 +177,8 @@ void Solver::calc_a_b()
     b[0] = y[1] - y[2];   b[1] = y[2] - y[0];   b[2] = y[0] - y[1];
 }
 
-void Solver::dc_dx_zero(double **localcMatrix, int numberBorder)
+Solver::~Solver()
 {
-    /*int t = mesh.border[numberBorder].numberNodes[0]; //select nodes on border
-    for (int i = 0; i < 3; i++)
-    {
-        if (x[i] == mesh.nodes[t][0])
-        {
-            localcMatrix[i][0] = 0;
-            localcMatrix[i][1] = 0;
-            localcMatrix[i][2] = 0;
-        }
-    }*/
-}
-
-void Solver::dc_dy_zero(double **localcMatrix, int numberBorder)
-{
-    /*int t = mesh.border[numberBorder].numberNodes[0]; //select nodes on border
-    for (int i = 0; i < 3; i++)
-    {
-        if (y[i] == mesh.nodes[t][1])
-        {
-            localcMatrix[i][0] = 0;
-            localcMatrix[i][1] = 0;
-            localcMatrix[i][2] = 0;
-        }
-    }*/
+    Manager::finish();
 }
 

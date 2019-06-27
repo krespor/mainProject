@@ -6,21 +6,41 @@
 
 #IncludeRegexTransform: 
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/arguments.h
-nlohmann/json.hpp
--
-
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/localMatrix.h
-math.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/math.h
-
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/mesh.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./././structurs/paths.h
 iostream
 -
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/methods.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././Manager.h
+iostream
+-
+nlohmann/json.hpp
+-
+fstream
+-
+cstring
+-
+./structurs/mesh.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./././structurs/mesh.h
+./structurs/paths.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./././structurs/paths.h
+./structurs/arguments.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./././structurs/arguments.h
+
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/arguments.h
+nlohmann/json.hpp
+-
+
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/localMatrix.h
 math.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/math.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/math.h
+
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/mesh.h
+iostream
+-
+
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/methods.h
+math.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/math.h
 vector
 -
 iostream
@@ -30,21 +50,27 @@ fstream
 map
 -
 
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.cpp
-Solver.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.h
-
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/Solver.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./Solver.h
 ./structurs/mesh.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/mesh.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/mesh.h
 ./structurs/arguments.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/arguments.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/arguments.h
 ./structurs/localMatrix.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/localMatrix.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/localMatrix.h
 ./structurs/methods.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./structurs/methods.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././structurs/methods.h
+./Manager.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/././Manager.h
 iostream
 -
 math.h
-/home/konstantin/Рабочий стол/projects/cpp/NewFEM/math.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./math.h
+
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/NavierStokes.cpp
+NavierStokes.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/NavierStokes.h
+
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/NavierStokes.h
+./Solver.h
+/home/konstantin/Рабочий стол/projects/cpp/NewFEM/./Solver.h
 

@@ -123,6 +123,33 @@ NewFEM/fast:
 	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/build
 .PHONY : NewFEM/fast
 
+Manager.o: Manager.cpp.o
+
+.PHONY : Manager.o
+
+# target to build an object file
+Manager.cpp.o:
+	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/Manager.cpp.o
+.PHONY : Manager.cpp.o
+
+Manager.i: Manager.cpp.i
+
+.PHONY : Manager.i
+
+# target to preprocess a source file
+Manager.cpp.i:
+	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/Manager.cpp.i
+.PHONY : Manager.cpp.i
+
+Manager.s: Manager.cpp.s
+
+.PHONY : Manager.s
+
+# target to generate assembly for a file
+Manager.cpp.s:
+	$(MAKE) -f CMakeFiles/NewFEM.dir/build.make CMakeFiles/NewFEM.dir/Manager.cpp.s
+.PHONY : Manager.cpp.s
+
 NavierStokes.o: NavierStokes.cpp.o
 
 .PHONY : NavierStokes.o
@@ -267,6 +294,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... NewFEM"
 	@echo "... edit_cache"
+	@echo "... Manager.o"
+	@echo "... Manager.i"
+	@echo "... Manager.s"
 	@echo "... NavierStokes.o"
 	@echo "... NavierStokes.i"
 	@echo "... NavierStokes.s"
